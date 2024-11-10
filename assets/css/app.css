@@ -1,0 +1,19 @@
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+@layer base {
+    button {
+        @apply px-2 py-1 text-xs rounded-lg
+    }
+}
+
+@layer components {
+    .btn-blue {
+        @apply bg-my_light_blue-1 text-my_blue-1
+    }
+
+    .btn-red {
+        @apply bg-my_light_red-1 text-my_red-2
+    }
+}
