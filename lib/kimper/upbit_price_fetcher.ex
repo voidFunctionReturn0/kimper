@@ -9,7 +9,7 @@ defmodule Kimper.UpbitPriceFetcher do
 
     subscription_message = Jason.encode!([
       %{"ticket" => "kimper"},
-      %{"type" => "ticker", "codes" => ["USDT-BTC"]},
+      %{"type" => "ticker", "codes" => ["KRW-BTC"]},
     ])
 
     WebSockex.send_frame(pid, {:text, subscription_message})
@@ -19,7 +19,7 @@ defmodule Kimper.UpbitPriceFetcher do
 
   def handle_frame({_type, message}, state) do
     price = Jason.decode!(message)["trade_price"]
-    Storage.set_upbit_btc_usdt_price(price)
+    Storage.set_upbit_btc_krw_price(price)
     {:ok, state}
   end
 end

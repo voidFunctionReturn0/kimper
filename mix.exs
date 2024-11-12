@@ -56,6 +56,7 @@ defmodule Kimper.MixProject do
       {:bandit, "~> 1.5"},
       {:websockex, "~> 0.4.3"},
       {:number, "~> 1.0"},
+      {:httpoison, "~> 2.2"},
     ]
   end
 

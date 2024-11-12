@@ -8,8 +8,9 @@ defmodule Kimper.Application do
   @impl true
   def start(_type, _args) do
     children = [
-      Kimper.UpbitPriceFetcher,
-      Kimper.BybitPriceFetcher,
+      # Kimper.UpbitPriceFetcher,
+      # Kimper.BybitPriceFetcher,
+      Kimper.ExchangeRateFetcher,
       {Kimper.Storage, %{}},
       KimperWeb.Telemetry,
       {DNSCluster, query: Application.get_env(:kimper, :dns_cluster_query) || :ignore},
