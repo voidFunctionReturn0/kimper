@@ -20,21 +20,15 @@ defmodule KimperWeb.HomeLive do
 
   def handle_info(:update, socket) do
     storage = Storage.state
-    upbit_krw_price = Map.get(storage, :upbit_btc_usdt_price)
+    upbit_krw_price = Map.get(storage, :upbit_btc_krw_price)
     bybit_usdt_price = Map.get(storage, :bybit_btc_usdt_price)
     exchange_rate = Map.get(storage, :exchange_rate)
     bybit_krw_price = get_krw_price(bybit_usdt_price, exchange_rate)
     kimp = get_kimp(upbit_krw_price, bybit_krw_price)
 
-    upbit_krw_price = to_str(upbit_krw_price)
-    bybit_krw_price = to_str(bybit_krw_price)
-    # TODO: kimp = to_str(kimp)
-    # TODO: 김프 데이터에 맞게 별도 함수로 뺴기
-    kimp = if is_float(upbit_krw_price) && is_float(bybit_krw_price) do
-      "#{(upbit_krw_price / bybit_krw_price * 100) |> Float.round(2)}%"
-    else
-      "..."
-    end
+    upbit_krw_price = to_str_price(upbit_krw_price)
+    bybit_krw_price = to_str_price(bybit_krw_price)
+    kimp = to_str_kimp(kimp)
 
     schedule_update()
 
@@ -50,19 +44,23 @@ defmodule KimperWeb.HomeLive do
     Process.send_after(self(), :update, @update_interval)
   end
 
-  # TODO: 각 유형에 맞게
-  defp to_str(usdt_price) do
-    if is_float(usdt_price), do: "#{round(usdt_price) |> Delimit.number_to_delimited()} USDT", else: "..."
-  end
-
-  # TODO: 타입체크
-  defp get_krw_price(bybit_usdt_price, exchange_rate) do
-    # TODO: if is_float(bybit_usdt_price) * is
+  defp get_krw_price(bybit_usdt_price, exchange_rate) when is_float(bybit_usdt_price) and is_float(exchange_rate) do
     bybit_usdt_price * exchange_rate
   end
+  defp get_krw_price(_, _), do: nil
 
-  defp get_kimp(upbit_krw_price, bybit_krw_price) do
-    # TODO: 타입 체크
-    bybit_krw_price
+  defp get_kimp(upbit_krw_price, bybit_krw_price) when is_float(upbit_krw_price) and is_float(bybit_krw_price) do
+    (upbit_krw_price / bybit_krw_price - 1) * 100
   end
+  defp get_kimp(_, _), do: nil
+
+  defp to_str_price(krw_price) when is_float(krw_price) do
+    "#{round(krw_price) |> Delimit.number_to_delimited(precision: 0)}원"
+  end
+  defp to_str_price(_), do: "..."
+
+  defp to_str_kimp(kimp) when is_float(kimp) do
+    "#{Float.round(kimp, 2)}%"
+  end
+  defp to_str_kimp(_), do: "..."
 end

@@ -1,8 +1,10 @@
 defmodule Kimper.Storage do
   use GenServer
 
-  def start_link(state) do
-    GenServer.start_link(__MODULE__, state, name: __MODULE__)
+  @initial_state %{}
+
+  def start_link(_) do
+    GenServer.start_link(__MODULE__, @initial_state, name: __MODULE__)
   end
 
   def set_upbit_btc_krw_price(price), do: GenServer.cast(__MODULE__, {:upbit_btc_krw_price, price})
