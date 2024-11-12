@@ -51,6 +51,14 @@ config :logger, :console,
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
 
+config :kimper, Kimper.Scheduler,
+  jobs: [
+    {"@daily", {Kimper.ExchangeRateFetcher, :fetch_exchange_rate, []}},
+    {"* 2 * * *", {Kimper.FundingRateNotifier, :notify_funding_rate, []}},
+    {"* 10 * * *", {Kimper.FundingRateNotifier, :notify_funding_rate, []}},
+    {"* 18 * * *", {Kimper.FundingRateNotifier, :notify_funding_rate, []}}
+  ]
+
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{config_env()}.exs"

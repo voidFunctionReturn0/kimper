@@ -57,6 +57,8 @@ defmodule Kimper.MixProject do
       {:websockex, "~> 0.4.3"},
       {:number, "~> 1.0"},
       {:httpoison, "~> 2.2"},
+      {:quantum, "~> 3.5"},
+      {:dotenvy, "~> 0.8.0"},
     ]
   end
 

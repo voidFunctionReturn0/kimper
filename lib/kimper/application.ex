@@ -8,10 +8,11 @@ defmodule Kimper.Application do
   @impl true
   def start(_type, _args) do
     children = [
+      Kimper.Storage,
       Kimper.UpbitPriceFetcher,
       Kimper.BybitPriceFetcher,
       Kimper.ExchangeRateFetcher,
-      Kimper.Storage,
+      Kimper.Scheduler,
       KimperWeb.Telemetry,
       {DNSCluster, query: Application.get_env(:kimper, :dns_cluster_query) || :ignore},
       {Phoenix.PubSub, name: Kimper.PubSub},
