@@ -36,4 +36,4 @@ npm-debug.log
 /assets/node_modules/
 
 # TODO: Gigalixir 배포할 땐 env도 포함시키기
-.env
+# .env
