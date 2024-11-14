@@ -58,7 +58,7 @@ defmodule Kimper.MixProject do
       {:number, "~> 1.0"},
       {:httpoison, "~> 2.2"},
       {:quantum, "~> 3.5"},
-      {:dotenvy, "~> 0.8.0"},
+      {:dotenv, "~> 3.1"},
     ]
   end
 

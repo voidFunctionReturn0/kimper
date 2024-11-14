@@ -7,6 +7,8 @@ defmodule Kimper.Application do
 
   @impl true
   def start(_type, _args) do
+    Dotenv.load()
+
     children = [
       Kimper.Storage,
       Kimper.UpbitPriceFetcher,

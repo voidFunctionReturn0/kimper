@@ -52,12 +52,12 @@ config :logger, :console,
 config :phoenix, :json_library, Jason
 
 config :kimper, Kimper.Scheduler,
+  timezone: :utc,
   jobs: [
     {"@daily", {Kimper.ExchangeRateFetcher, :fetch_exchange_rate, []}},
-    {"* 2 * * *", {Kimper.FundingRateNotifier, :notify_funding_rate, []}},
-    {"* 10 * * *", {Kimper.FundingRateNotifier, :notify_funding_rate, []}},
-    {"* 18 * * *", {Kimper.FundingRateNotifier, :notify_funding_rate, []}},
-    {"7 15 * * *", {Kimper.FundingRateNotifier, :notify_funding_rate, []}}
+    {"0 0 * * *", {Kimper.FundingRateNotifier, :notify_funding_rate, []}},
+    {"0 8 * * *", {Kimper.FundingRateNotifier, :notify_funding_rate, []}},
+    {"0 16 * * *", {Kimper.FundingRateNotifier, :notify_funding_rate, []}},
   ]
 
 # Import environment specific config. This must remain at the bottom

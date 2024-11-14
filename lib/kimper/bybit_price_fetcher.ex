@@ -5,6 +5,7 @@ defmodule Kimper.BybitPriceFetcher do
    alias Kimper.Storage
 
   @url "wss://stream.bybit.com/v5/public/spot"
+  @heart_beat_interval 20_000 # 20초
 
   def start_link(state) do
     {:ok, pid} = WebSockex.start_link(@url, __MODULE__, state)
@@ -17,11 +18,12 @@ defmodule Kimper.BybitPriceFetcher do
     })
 
     WebSockex.send_frame(pid, {:text, subscription_message})
+    # TODO3: Process.send_after(self(), :ping, @heart_beat_interval) -> [error] Supervisor received unexpected message: :ping
 
     {:ok, pid}
   end
 
-  def handle_frame({_type, message}, state) do
+  def handle_frame({:text, message}, state) do
     message_json = Jason.decode!(message)
 
     if Map.has_key?(message_json, "data") do
@@ -32,5 +34,13 @@ defmodule Kimper.BybitPriceFetcher do
     end
 
     {:ok, state}
+  end
+
+  def handle_info(:ping, pid) do
+    IO.inspect(pid, label: "## ping")
+    heart_beat_message = Jason.encode!(%{"op" => "ping"})
+    WebSockex.send_frame(pid, {:text, heart_beat_message})
+    Process.send_after(self(), :ping, @heart_beat_interval)
+    {:ok, pid}
   end
 end
