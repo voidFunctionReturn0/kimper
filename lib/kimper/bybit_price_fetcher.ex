@@ -1,5 +1,5 @@
 defmodule Kimper.BybitPriceFetcher do
-   # TODO: 20초마다 ping을 보내면 네트워크 이슈 피할 수 있다고 함 https://bybit-exchange.github.io/docs/v5/ws/connect#how-to-send-the-heartbeat-packet
+   # TODO1: 20초마다 ping을 보내면 네트워크 이슈 피할 수 있다고 함 https://bybit-exchange.github.io/docs/v5/ws/connect#how-to-send-the-heartbeat-packet
 
    use WebSockex
    alias Kimper.Storage
@@ -10,7 +10,6 @@ defmodule Kimper.BybitPriceFetcher do
     {:ok, pid} = WebSockex.start_link(@url, __MODULE__, state)
 
     subscription_message = Jason.encode!(%{
-      "req_id" => "kimper",
       "op" => "subscribe",
       "args" => [
         "tickers.BTCUSDT"

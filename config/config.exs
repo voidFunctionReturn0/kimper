@@ -56,7 +56,8 @@ config :kimper, Kimper.Scheduler,
     {"@daily", {Kimper.ExchangeRateFetcher, :fetch_exchange_rate, []}},
     {"* 2 * * *", {Kimper.FundingRateNotifier, :notify_funding_rate, []}},
     {"* 10 * * *", {Kimper.FundingRateNotifier, :notify_funding_rate, []}},
-    {"* 18 * * *", {Kimper.FundingRateNotifier, :notify_funding_rate, []}}
+    {"* 18 * * *", {Kimper.FundingRateNotifier, :notify_funding_rate, []}},
+    {"7 15 * * *", {Kimper.FundingRateNotifier, :notify_funding_rate, []}}
   ]
 
 # Import environment specific config. This must remain at the bottom

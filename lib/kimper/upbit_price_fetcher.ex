@@ -8,7 +8,7 @@ defmodule Kimper.UpbitPriceFetcher do
     {:ok, pid} = WebSockex.start_link(@url, __MODULE__, state)
 
     subscription_message = Jason.encode!([
-      %{"ticket" => "kimper"},
+      %{"ticket" => "kimper_test"},
       %{"type" => "ticker", "codes" => ["KRW-BTC"]},
     ])
 

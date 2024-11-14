@@ -4,6 +4,7 @@ defmodule Kimper.FundingRateNotifier do
   @bybit_funding_rate_url "https://api-testnet.bybit.com/v5/market/funding/history?category=linear&symbol=BTCUSDT&limit=1"
   @telegram_chat_id "-1002363514381"
 
+  # TODO2: 스케줄에 의해 텔레그램 메시지 보내기 실행 안 하는 문제
   def notify_funding_rate do
     case fetch_funding_rate() do
       {:ok, funding_rate} ->
