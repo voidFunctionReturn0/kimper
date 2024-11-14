@@ -8,25 +8,16 @@ defmodule Kimper.ExchangeRateFetcher do
     GenServer.start_link(__MODULE__, @initial_state, name: __MODULE__)
   end
 
-  # def get_exchange_rate() do
-  #   GenServer.call(__MODULE__, :get_exchange_rate)
-  # end
-
   def init(state) do
     Process.send_after(self(), :fetch_exchange_rate, 0)
     {:ok, state}
   end
-
-  # def handle_call(:get_exchange_rate, _from, state) do
-  #   {:reply, state.usd_krw_rate, state}
-  # end
 
   def handle_info(:fetch_exchange_rate, state) do
     new_exchange_rate = fetch_usd_krw_rate()
     Kimper.Storage.set_exchange_rate(new_exchange_rate)
     {:noreply, %{state | usd_krw_rate: new_exchange_rate}}
   end
-
 
   defp fetch_usd_krw_rate() do
     response = HTTPoison.get!(@exchange_rate_api_url).body |> Jason.decode!()
