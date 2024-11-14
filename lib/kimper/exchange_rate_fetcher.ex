@@ -13,6 +13,8 @@ defmodule Kimper.ExchangeRateFetcher do
     {:ok, state}
   end
 
+  def fetch_exchange_rate, do: Process.send_after(self(), :fetch_exchange_rate, 0)
+
   def handle_info(:fetch_exchange_rate, state) do
     new_exchange_rate = fetch_usd_krw_rate()
     Kimper.Storage.set_exchange_rate(new_exchange_rate)
