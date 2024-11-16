@@ -3,13 +3,12 @@ defmodule Kimper.FundingRateNotifier do
   @telegram_chat_id "-1002363514381"
 
   def notify_funding_rate do
-    IO.puts("## notify_funding_rate")
     case fetch_funding_rate() do
       {:ok, funding_rate} ->
         bot_token = System.get_env("TELEGRAM_BOT_TOKEN")
         telegram_url = "https://api.telegram.org/bot#{bot_token}/sendMessage"
         headers = [{"Content-Type", "application/json"}]
-        message = "Bybit BTC/USDT 펀딩비는 #{funding_rate * 100}% 입니다."
+        message = "Bybit BTC/USDT 펀딩비는 #{String.to_float(funding_rate) * 100}% 입니다."
         body = Jason.encode!(%{
           chat_id: @telegram_chat_id,
           text: message
@@ -28,7 +27,6 @@ defmodule Kimper.FundingRateNotifier do
   end
 
   defp fetch_funding_rate do
-    IO.puts("## fetch_funding_rate")
     case HTTPoison.get(@bybit_funding_rate_url) do
       {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
         body
