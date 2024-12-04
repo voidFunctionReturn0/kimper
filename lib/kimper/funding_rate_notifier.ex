@@ -3,8 +3,10 @@ defmodule Kimper.FundingRateNotifier do
   @telegram_chat_id "-1002363514381"
 
   def notify_funding_rate do
+    IO.puts("## notify_funding_rate")
     case fetch_funding_rate() do
       {:ok, funding_rate} ->
+        IO.puts("## fetch_funding_rate ok")
         bot_token = System.get_env("TELEGRAM_BOT_TOKEN")
         telegram_url = "https://api.telegram.org/bot#{bot_token}/sendMessage"
         headers = [{"Content-Type", "application/json"}]
@@ -16,6 +18,7 @@ defmodule Kimper.FundingRateNotifier do
 
         case HTTPoison.post(telegram_url, body, headers) do
           {:ok, _response} ->
+            IO.puts("## post ok")
             nil
           {:error, reason} ->
             IO.puts("## Failed to send telegram message: #{reason}")

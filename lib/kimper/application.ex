@@ -14,14 +14,14 @@ defmodule Kimper.Application do
       Kimper.UpbitPriceFetcher,
       Kimper.BybitPriceFetcher,
       Kimper.ExchangeRateFetcher,
-      Kimper.Scheduler,
       KimperWeb.Telemetry,
       {DNSCluster, query: Application.get_env(:kimper, :dns_cluster_query) || :ignore},
       {Phoenix.PubSub, name: Kimper.PubSub},
       # Start a worker by calling: Kimper.Worker.start_link(arg)
       # {Kimper.Worker, arg},
       # Start to serve requests, typically the last entry
-      KimperWeb.Endpoint
+      KimperWeb.Endpoint,
+      Kimper.Scheduler,
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
