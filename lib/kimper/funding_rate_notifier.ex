@@ -1,5 +1,5 @@
 defmodule Kimper.FundingRateNotifier do
-  @bybit_funding_rate_url "https://api.bybit.com/v5/market/funding/history?category=linear&symbol=BTCUSD&limit=1"
+  @bybit_funding_rate_url "https://api.bytick.com/v5/market/funding/history?category=linear&symbol=BTCUSD&limit=1"
   @telegram_chat_id "-1002363514381"
 
   def notify_funding_rate do
