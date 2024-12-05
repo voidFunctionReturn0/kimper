@@ -17,8 +17,9 @@ defmodule Kimper.FundingRateNotifier do
         })
 
         case HTTPoison.post(telegram_url, body, headers) do
-          {:ok, _response} ->
+          {:ok, response} ->
             IO.puts("## post ok")
+            IO.inspect(response, label: "##")
             nil
           {:error, reason} ->
             IO.puts("## Failed to send telegram message: #{reason}")
