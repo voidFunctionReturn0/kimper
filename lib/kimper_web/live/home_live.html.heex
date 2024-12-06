@@ -22,7 +22,8 @@
                             <td class="flex-auto px-4 py-2 min-w-40">
                                 <span><%= coin.ticker_english %></span>
                                 <span class="text-my_gray-4 text-xs"> · <%= coin.ticker_korean %></span></td>
-                            <td class="text-my_red-1 flex-auto px-4 py-2 min-w-24"><%= coin.kimp %></td>
+                            <%!-- TODO: 김프 양수면 파랗게? --%>
+                            <td class="text-my_red-1 flex-auto px-4 py-2 min-w-24"><%= coin.kimp %></td> 
                             <td class="flex-auto px-4 py-2 min-w-40"><%= coin.upbit_krw_price %></td>
                             <td class="flex-auto px-4 py-2 min-w-40"><%= coin.bybit_krw_price %></td>
                             <td class="flex-auto px-4 py-2 min-w-24"><button class="btn-red">차트보기</button></td>

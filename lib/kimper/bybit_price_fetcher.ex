@@ -1,5 +1,6 @@
+# TODO: 자꾸 셧다운되는 문제 해결 필요
+
 defmodule Kimper.BybitPriceFetcher do
-   # TODO1: 20초마다 ping을 보내면 네트워크 이슈 피할 수 있다고 함 https://bybit-exchange.github.io/docs/v5/ws/connect#how-to-send-the-heartbeat-packet
    use WebSockex
    require Logger
    alias Kimper.Storage
@@ -13,21 +14,19 @@ defmodule Kimper.BybitPriceFetcher do
   @btg "tickers.BTGUSDT"
 
   def start_link(state) do
-    {:ok, pid} = WebSockex.start_link(@url, __MODULE__, state)
+    case WebSockex.start_link(@url, __MODULE__, state) do
+      {:ok, pid} ->
+        subscription_message = Jason.encode!(%{
+          "op" => "subscribe",
+          "args" => [@btc, @sol, @xrp, @eos, @btg]
+        })
+        WebSockex.send_frame(pid, {:text, subscription_message})
+        {:ok, pid}
 
-    subscription_message = Jason.encode!(%{
-      "op" => "subscribe",
-      "args" => [
-        @btc,
-        @sol,
-        @xrp,
-        @eos,
-        @btg,
-      ]
-    })
-
-    WebSockex.send_frame(pid, {:text, subscription_message})
-    {:ok, pid}
+      {:error, reason} ->
+        Logger.error("## Failed to start WebSocket: #{inspect(reason)}")
+        {:error, reason}
+    end
   end
 
   def init(state) do
@@ -46,7 +45,6 @@ defmodule Kimper.BybitPriceFetcher do
     end
 
     schedule_heartbeat()
-
     {:ok, state}
   end
 
@@ -77,6 +75,7 @@ defmodule Kimper.BybitPriceFetcher do
         @xrp -> Storage.set_bybit_xrp_usdt_price(price)
         @eos -> Storage.set_bybit_eos_usdt_price(price)
         @btg -> Storage.set_bybit_btg_usdt_price(price)
+        _    -> IO.puts("## unexpected bybit topic")
       end
     end
 
