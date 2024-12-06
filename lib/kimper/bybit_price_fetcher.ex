@@ -6,6 +6,8 @@ defmodule Kimper.BybitPriceFetcher do
 
   @url "wss://stream.bybit.com/v5/public/spot"
   @heartbeat_interval 20_000 # 20초
+  @btc "tickers.BTCUSDT"
+  @xrp "tickers.XRPUSDT"
 
   def start_link(state) do
     {:ok, pid} = WebSockex.start_link(@url, __MODULE__, state)
@@ -13,7 +15,8 @@ defmodule Kimper.BybitPriceFetcher do
     subscription_message = Jason.encode!(%{
       "op" => "subscribe",
       "args" => [
-        "tickers.BTCUSDT"
+        @btc,
+        @xrp,
       ]
     })
 
@@ -60,10 +63,14 @@ defmodule Kimper.BybitPriceFetcher do
     message_json = Jason.decode!(message)
 
     if Map.has_key?(message_json, "data") do
-      price = message_json["data"]["lastPrice"]
-      |> String.to_float()
+      IO.inspect(message_json, label: "## bybit")
 
-      Storage.set_bybit_btc_usdt_price(price)
+      price = message_json["data"]["lastPrice"] |> String.to_float()
+
+      case message_json["topic"] do
+        @btc -> Storage.set_bybit_btc_usdt_price(price)
+        @xrp -> Storage.set_bybit_xrp_usdt_price(price)
+      end
     end
 
     {:ok, state}
