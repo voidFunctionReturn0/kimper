@@ -9,7 +9,7 @@
             </div>
             <table class="table-fixed w-full flex flex-col text-left overflow-auto">
                 <tr class="text-base font-bold w-full flex">
-                    <th class="flex-auto px-4 py-2 min-w-36">코인</th>
+                    <th class="flex-auto px-4 py-2 min-w-40">코인</th>
                     <th class="text-my_red-1 flex-auto px-4 py-2 min-w-24">김프</th>
                     <th class="flex-auto px-4 py-2 min-w-40">업비트</th>
                     <th class="flex-auto px-4 py-2 min-w-40">바이비트</th>
@@ -19,7 +19,7 @@
                 <tbody>
                     <%= for coin <- @coins do %>
                         <tr class="text-base w-full flex">
-                            <td class="flex-auto px-4 py-2 min-w-36">
+                            <td class="flex-auto px-4 py-2 min-w-40">
                                 <span><%= coin.ticker_english %></span>
                                 <span class="text-my_gray-4 text-xs"> · <%= coin.ticker_korean %></span></td>
                             <td class="text-my_red-1 flex-auto px-4 py-2 min-w-24"><%= coin.kimp %></td>

@@ -4,7 +4,7 @@ defmodule KimperWeb.HomeLive do
   alias Number.Delimit
 
   @update_interval 1_000 # 1초
-  @coin_tickers [:btc, :xrp]
+  @coin_tickers [:btc, :sol, :xrp, :eos, :btg]
 
   def mount(_params, _session, socket) do
     if connected?(socket) do
@@ -48,6 +48,27 @@ defmodule KimperWeb.HomeLive do
       telegram_link: "https://t.me/+jUKF4BTqgQNhOGY1",
     }
   end
+  defp to_coin(:sol) do
+    storage = Storage.state
+    upbit_krw_price = Map.get(storage, :upbit_sol_krw_price)
+    bybit_usdt_price = Map.get(storage, :bybit_sol_usdt_price)
+    exchange_rate = Map.get(storage, :exchange_rate)
+    bybit_krw_price = get_krw_price(bybit_usdt_price, exchange_rate)
+    kimp = get_kimp(upbit_krw_price, bybit_krw_price)
+
+    upbit_krw_price = to_str_price(upbit_krw_price)
+    bybit_krw_price = to_str_price(bybit_krw_price)
+    kimp = to_str_kimp(kimp)
+
+    %{
+      ticker_english: "SOL",
+      ticker_korean: "솔라나",
+      upbit_krw_price: upbit_krw_price,
+      bybit_krw_price: bybit_krw_price,
+      kimp: kimp,
+      # TODO: 텔레그램 링크 필요
+    }
+  end
   defp to_coin(:xrp) do
     storage = Storage.state
     upbit_krw_price = Map.get(storage, :upbit_xrp_krw_price)
@@ -63,6 +84,48 @@ defmodule KimperWeb.HomeLive do
     %{
       ticker_english: "XRP",
       ticker_korean: "리플",
+      upbit_krw_price: upbit_krw_price,
+      bybit_krw_price: bybit_krw_price,
+      kimp: kimp,
+      # TODO: 텔레그램 링크 필요
+    }
+  end
+  defp to_coin(:eos) do
+    storage = Storage.state
+    upbit_krw_price = Map.get(storage, :upbit_eos_krw_price)
+    bybit_usdt_price = Map.get(storage, :bybit_eos_usdt_price)
+    exchange_rate = Map.get(storage, :exchange_rate)
+    bybit_krw_price = get_krw_price(bybit_usdt_price, exchange_rate)
+    kimp = get_kimp(upbit_krw_price, bybit_krw_price)
+
+    upbit_krw_price = to_str_price(upbit_krw_price)
+    bybit_krw_price = to_str_price(bybit_krw_price)
+    kimp = to_str_kimp(kimp)
+
+    %{
+      ticker_english: "EOS",
+      ticker_korean: "이오스",
+      upbit_krw_price: upbit_krw_price,
+      bybit_krw_price: bybit_krw_price,
+      kimp: kimp,
+      # TODO: 텔레그램 링크 필요
+    }
+  end
+  defp to_coin(:btg) do
+    storage = Storage.state
+    upbit_krw_price = Map.get(storage, :upbit_btg_krw_price)
+    bybit_usdt_price = Map.get(storage, :bybit_btg_usdt_price)
+    exchange_rate = Map.get(storage, :exchange_rate)
+    bybit_krw_price = get_krw_price(bybit_usdt_price, exchange_rate)
+    kimp = get_kimp(upbit_krw_price, bybit_krw_price)
+
+    upbit_krw_price = to_str_price(upbit_krw_price)
+    bybit_krw_price = to_str_price(bybit_krw_price)
+    kimp = to_str_kimp(kimp)
+
+    %{
+      ticker_english: "BTG",
+      ticker_korean: "비트코인골드",
       upbit_krw_price: upbit_krw_price,
       bybit_krw_price: bybit_krw_price,
       kimp: kimp,
