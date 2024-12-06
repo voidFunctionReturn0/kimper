@@ -17,16 +17,18 @@
                     <th class="flex-auto px-4 py-2 min-w-24">매일시세</th>
                 </tr>
                 <tbody>
-                    <tr class="text-base w-full flex">
-                        <td class="flex-auto px-4 py-2 min-w-36">
-                            <span>BTC</span>
-                            <span class="text-my_gray-4 text-xs"> · 비트코인</span></td>
-                        <td class="text-my_red-1 flex-auto px-4 py-2 min-w-24"><%= @kimp %></td>
-                        <td class="flex-auto px-4 py-2 min-w-40"><%= @upbit_krw_price %></td>
-                        <td class="flex-auto px-4 py-2 min-w-40"><%= @bybit_krw_price %></td>
-                        <td class="flex-auto px-4 py-2 min-w-24"><button class="btn-red">차트보기</button></td>
-                        <td class="flex-auto px-4 py-2 min-w-24"><button class="btn-blue" type="button" onclick="window.open('https://t.me/+jUKF4BTqgQNhOGY1')">텔레그램</button></td>
-                    </tr>
+                    <%= for coin <- @coins do %>
+                        <tr class="text-base w-full flex">
+                            <td class="flex-auto px-4 py-2 min-w-36">
+                                <span><%= coin.ticker_english %></span>
+                                <span class="text-my_gray-4 text-xs"> · <%= coin.ticker_korean %></span></td>
+                            <td class="text-my_red-1 flex-auto px-4 py-2 min-w-24"><%= coin.kimp %></td>
+                            <td class="flex-auto px-4 py-2 min-w-40"><%= coin.upbit_krw_price %></td>
+                            <td class="flex-auto px-4 py-2 min-w-40"><%= coin.bybit_krw_price %></td>
+                            <td class="flex-auto px-4 py-2 min-w-24"><button class="btn-red">차트보기</button></td>
+                            <td class="flex-auto px-4 py-2 min-w-24"><button class="btn-blue" type="button" onclick="window.open({coin.telegram_link})">텔레그램</button></td>
+                        </tr>
+                    <% end %>
                 </tbody>
             </table>
         </section>

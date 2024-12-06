@@ -4,6 +4,7 @@ defmodule KimperWeb.HomeLive do
   alias Number.Delimit
 
   @update_interval 1_000 # 1초
+  @coin_tickers [:btc, :xrp]
 
   def mount(_params, _session, socket) do
     if connected?(socket) do
@@ -11,14 +12,22 @@ defmodule KimperWeb.HomeLive do
     end
 
     socket = socket
-    |> assign(upbit_krw_price: nil)
-    |> assign(bybit_krw_price: nil)
-    |> assign(kimp: nil)
+    |> assign(coins: [])
 
     {:ok, socket, layout: false}
   end
 
   def handle_info(:update, socket) do
+    coins = @coin_tickers
+    |> Enum.map(&to_coin/1)
+    |> Enum.reject(&is_nil/1)
+
+    schedule_update()
+
+    {:noreply, socket |> assign(coins: coins)}
+  end
+
+  defp to_coin(:btc) do
     storage = Storage.state
     upbit_krw_price = Map.get(storage, :upbit_btc_krw_price)
     bybit_usdt_price = Map.get(storage, :bybit_btc_usdt_price)
@@ -30,15 +39,37 @@ defmodule KimperWeb.HomeLive do
     bybit_krw_price = to_str_price(bybit_krw_price)
     kimp = to_str_kimp(kimp)
 
-    schedule_update()
-
-    socket = socket
-    |> assign(upbit_krw_price: upbit_krw_price)
-    |> assign(bybit_krw_price: bybit_krw_price)
-    |> assign(kimp: kimp)
-
-    {:noreply, socket}
+    %{
+      ticker_english: "BTC",
+      ticker_korean: "비트코인",
+      upbit_krw_price: upbit_krw_price,
+      bybit_krw_price: bybit_krw_price,
+      kimp: kimp,
+      telegram_link: "https://t.me/+jUKF4BTqgQNhOGY1",
+    }
   end
+  defp to_coin(:xrp) do
+    storage = Storage.state
+    upbit_krw_price = Map.get(storage, :upbit_xrp_krw_price)
+    bybit_usdt_price = Map.get(storage, :bybit_xrp_usdt_price)
+    exchange_rate = Map.get(storage, :exchange_rate)
+    bybit_krw_price = get_krw_price(bybit_usdt_price, exchange_rate)
+    kimp = get_kimp(upbit_krw_price, bybit_krw_price)
+
+    upbit_krw_price = to_str_price(upbit_krw_price)
+    bybit_krw_price = to_str_price(bybit_krw_price)
+    kimp = to_str_kimp(kimp)
+
+    %{
+      ticker_english: "XRP",
+      ticker_korean: "리플",
+      upbit_krw_price: upbit_krw_price,
+      bybit_krw_price: bybit_krw_price,
+      kimp: kimp,
+      # TODO: 텔레그램 링크 필요
+    }
+  end
+  defp to_coin(_), do: nil
 
   defp schedule_update() do
     Process.send_after(self(), :update, @update_interval)
