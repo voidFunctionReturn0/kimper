@@ -20,7 +20,7 @@ defmodule Kimper.FundingRateNotifier do
         bot_token = System.get_env("TELEGRAM_BOT_TOKEN")
         telegram_url = "https://api.telegram.org/bot#{bot_token}/sendMessage"
         headers = [{"Content-Type", "application/json"}]
-        message = "## 테스트 Bybit #{english(coin_usd)} 펀딩비는 #{String.to_float(funding_rate) * 100}% 입니다."
+        message = "Bybit #{english(coin_usd)} 펀딩비는 #{String.to_float(funding_rate) * 100}% 입니다."
         body = Jason.encode!(%{
           chat_id: Map.get(@telegram_chat_id, coin_usd),
           text: message
