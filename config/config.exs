@@ -58,7 +58,6 @@ config :kimper, Kimper.Scheduler,
     {"0 0 * * *", {Kimper.Notifier, :notify_iter, []}},
     {"0 8 * * *", {Kimper.Notifier, :notify_iter, []}},
     {"0 16 * * *", {Kimper.Notifier, :notify_iter, []}},
-    {"* * * * *", {Kimper.Notifier, :notify_iter, []}},
   ]
 
 # Import environment specific config. This must remain at the bottom
