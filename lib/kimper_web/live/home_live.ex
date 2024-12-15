@@ -17,7 +17,7 @@ defmodule KimperWeb.HomeLive do
   end
 
   def handle_info(:update, socket) do
-    coins = Map.keys(Storage.state)
+    coins = Storage.state.coins
     |> Enum.map(&to_coin/1)
     |> Enum.reject(&is_nil/1)
 

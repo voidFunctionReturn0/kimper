@@ -8,6 +8,7 @@ defmodule Kimper.Storage do
     eos: %{upbit: %{krw: nil}, bybit: %{usdt: nil, usdt_to_krw: nil}, kimp: nil},
     eth: %{upbit: %{krw: nil}, bybit: %{usdt: nil, usdt_to_krw: nil}, kimp: nil},
     exchange_rate: nil,
+    coins: [:btc, :sol, :xrp, :eos, :eth]
   }
 
   def start_link(_), do: GenServer.start_link(__MODULE__, @initial_state, name: __MODULE__)
@@ -47,7 +48,7 @@ defmodule Kimper.Storage do
   def handle_call(:state, _from, state) do
     new_state = state
     |> Enum.map(fn {key, value} ->
-      if (key != :exchange_rate) do
+      if (key != :exchange_rate and key != :coins) do
         bybit_usdt_price = value[:bybit][:usdt]
         exchange_rate = state[:exchange_rate]
         bybit_krw_price = get_krw_price(bybit_usdt_price, exchange_rate)
@@ -57,7 +58,7 @@ defmodule Kimper.Storage do
       end
     end)
     |> Enum.map(fn {key, value} ->
-      if (key != :exchange_rate) do
+      if (key != :exchange_rate and key != :coins) do
         upbit_krw_price = value[:upbit][:krw]
         bybit_krw_price = value[:bybit][:usdt_to_krw]
         kimp = get_kimp(upbit_krw_price, bybit_krw_price)
