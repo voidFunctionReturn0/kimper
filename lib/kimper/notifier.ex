@@ -23,7 +23,6 @@ defmodule Kimper.Notifier do
         headers = [{"Content-Type", "application/json"}]
         english_usd = english_usd(coin_usd)
         message = """
-        ## 테스트
         <Bybit>
         - #{english_usd} 펀딩비: #{String.to_float(funding_rate) * 100}%
         - #{english_usdt(english_usd)} 김프: #{kimp(coin_usd) |> Float.floor(2)}%
