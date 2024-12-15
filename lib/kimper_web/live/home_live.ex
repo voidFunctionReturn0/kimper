@@ -67,6 +67,7 @@ defmodule KimperWeb.HomeLive do
       bybit_krw_price: bybit_krw_price,
       kimp: kimp,
       # TODO: 텔레그램 링크 필요
+      telegram_link: ""
     }
   end
   defp to_coin(:xrp) do
@@ -88,6 +89,7 @@ defmodule KimperWeb.HomeLive do
       bybit_krw_price: bybit_krw_price,
       kimp: kimp,
       # TODO: 텔레그램 링크 필요
+      telegram_link: ""
     }
   end
   defp to_coin(:eos) do
@@ -109,6 +111,7 @@ defmodule KimperWeb.HomeLive do
       bybit_krw_price: bybit_krw_price,
       kimp: kimp,
       # TODO: 텔레그램 링크 필요
+      telegram_link: ""
     }
   end
   defp to_coin(:btg) do
@@ -130,8 +133,10 @@ defmodule KimperWeb.HomeLive do
       bybit_krw_price: bybit_krw_price,
       kimp: kimp,
       # TODO: 텔레그램 링크 필요
+      telegram_link: ""
     }
   end
+  # TODO: ETH 추가 https://t.me/+Pgjk1X2adfQ0MGFl
   defp to_coin(_), do: nil
 
   defp schedule_update() do

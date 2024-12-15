@@ -29,6 +29,7 @@ defmodule Kimper.BybitPriceFetcher do
     end
   end
 
+  ## TODO: init 실행 안됨 -> 하트비트 실행 안됨
   def init(state) do
     schedule_heartbeat()
     {:ok, state}
@@ -39,7 +40,7 @@ defmodule Kimper.BybitPriceFetcher do
   end
 
   def handle_cast(:send_heartbeat, state) do
-    case send_heartbeat() do
+    case send_heartbeat(self()) do
       :ok                -> Logger.info("## Heartbeat sent successfully")
       {:error, reason}   -> Logger.error("## Failed to send Heartbeat: #{inspect(reason)}")
     end
@@ -53,9 +54,9 @@ defmodule Kimper.BybitPriceFetcher do
     {:noreply, state}
   end
 
-  defp send_heartbeat() do
+  defp send_heartbeat(pid) do
     heartbeat_message = Jason.encode!(%{"op" => "ping"})
-    WebSockex.send_frame(self(), {:text, heartbeat_message})
+    WebSockex.send_frame(pid, {:text, heartbeat_message})
   end
 
   def handle_frame({:text, %{"success" => true, "ret_msg" => "pong"}}, state) do

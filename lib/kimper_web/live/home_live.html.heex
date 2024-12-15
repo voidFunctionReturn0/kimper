@@ -27,7 +27,7 @@
                             <td class="flex-auto px-4 py-2 min-w-40"><%= coin.upbit_krw_price %></td>
                             <td class="flex-auto px-4 py-2 min-w-40"><%= coin.bybit_krw_price %></td>
                             <td class="flex-auto px-4 py-2 min-w-24"><button class="btn-red">차트보기</button></td>
-                            <td class="flex-auto px-4 py-2 min-w-24"><button class="btn-blue" type="button" onclick="window.open({coin.telegram_link})">텔레그램</button></td>
+                            <td class="flex-auto px-4 py-2 min-w-24"><button class="btn-blue" type="button" onclick={"window.open('#{coin.telegram_link}')"}>텔레그램</button></td>
                         </tr>
                     <% end %>
                 </tbody>
