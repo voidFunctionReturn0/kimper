@@ -1,21 +1,28 @@
 defmodule Kimper.Storage do
   use GenServer
 
-  @initial_state %{}
+  @initial_state %{
+    btc: %{upbit: %{krw: nil}, bybit: %{usdt: nil, usdt_to_krw: nil}, kimp: nil},
+    sol: %{upbit: %{krw: nil}, bybit: %{usdt: nil, usdt_to_krw: nil}, kimp: nil},
+    xrp: %{upbit: %{krw: nil}, bybit: %{usdt: nil, usdt_to_krw: nil}, kimp: nil},
+    eos: %{upbit: %{krw: nil}, bybit: %{usdt: nil, usdt_to_krw: nil}, kimp: nil},
+    btg: %{upbit: %{krw: nil}, bybit: %{usdt: nil, usdt_to_krw: nil}, kimp: nil},
+    exchange_rate: nil,
+  }
 
   def start_link(_), do: GenServer.start_link(__MODULE__, @initial_state, name: __MODULE__)
 
-  def set_upbit_btc_krw_price(price), do: GenServer.cast(__MODULE__, {:upbit_btc_krw_price, price})
-  def set_upbit_sol_krw_price(price), do: GenServer.cast(__MODULE__, {:upbit_sol_krw_price, price})
-  def set_upbit_xrp_krw_price(price), do: GenServer.cast(__MODULE__, {:upbit_xrp_krw_price, price})
-  def set_upbit_eos_krw_price(price), do: GenServer.cast(__MODULE__, {:upbit_eos_krw_price, price})
-  def set_upbit_btg_krw_price(price), do: GenServer.cast(__MODULE__, {:upbit_btg_krw_price, price})
+  def set_upbit_krw_price(price, :btc), do: GenServer.cast(__MODULE__, {:upbit_krw_price, price, :btc})
+  def set_upbit_krw_price(price, :sol), do: GenServer.cast(__MODULE__, {:upbit_krw_price, price, :sol})
+  def set_upbit_krw_price(price, :xrp), do: GenServer.cast(__MODULE__, {:upbit_krw_price, price, :xrp})
+  def set_upbit_krw_price(price, :eos), do: GenServer.cast(__MODULE__, {:upbit_krw_price, price, :eos})
+  def set_upbit_krw_price(price, :btg), do: GenServer.cast(__MODULE__, {:upbit_krw_price, price, :btg})
 
-  def set_bybit_btc_usdt_price(price), do: GenServer.cast(__MODULE__, {:bybit_btc_usdt_price, price})
-  def set_bybit_sol_usdt_price(price), do: GenServer.cast(__MODULE__, {:bybit_sol_usdt_price, price})
-  def set_bybit_xrp_usdt_price(price), do: GenServer.cast(__MODULE__, {:bybit_xrp_usdt_price, price})
-  def set_bybit_eos_usdt_price(price), do: GenServer.cast(__MODULE__, {:bybit_eos_usdt_price, price})
-  def set_bybit_btg_usdt_price(price), do: GenServer.cast(__MODULE__, {:bybit_btg_usdt_price, price})
+  def set_bybit_usdt_price(price, :btc), do: GenServer.cast(__MODULE__, {:bybit_usdt_price, price, :btc})
+  def set_bybit_usdt_price(price, :sol), do: GenServer.cast(__MODULE__, {:bybit_usdt_price, price, :sol})
+  def set_bybit_usdt_price(price, :xrp), do: GenServer.cast(__MODULE__, {:bybit_usdt_price, price, :xrp})
+  def set_bybit_usdt_price(price, :eos), do: GenServer.cast(__MODULE__, {:bybit_usdt_price, price, :eos})
+  def set_bybit_usdt_price(price, :btg), do: GenServer.cast(__MODULE__, {:bybit_usdt_price, price, :btg})
 
   def set_exchange_rate(rate), do: GenServer.cast(__MODULE__, {:exchange_rate, rate})
 
@@ -23,20 +30,54 @@ defmodule Kimper.Storage do
 
   def init(state), do: {:ok, state}
 
-  def handle_cast({:upbit_btc_krw_price, price}, state), do: {:noreply, Map.put(state, :upbit_btc_krw_price, price)}
-  def handle_cast({:upbit_sol_krw_price, price}, state), do: {:noreply, Map.put(state, :upbit_sol_krw_price, price)}
-  def handle_cast({:upbit_xrp_krw_price, price}, state), do: {:noreply, Map.put(state, :upbit_xrp_krw_price, price)}
-  def handle_cast({:upbit_eos_krw_price, price}, state), do: {:noreply, Map.put(state, :upbit_eos_krw_price, price)}
-  def handle_cast({:upbit_btg_krw_price, price}, state), do: {:noreply, Map.put(state, :upbit_btg_krw_price, price)}
+  def handle_cast({:upbit_krw_price, price, :btc}, state), do: {:noreply, put_in(state, [:btc, :upbit, :krw], price)}
+  def handle_cast({:upbit_krw_price, price, :sol}, state), do: {:noreply, put_in(state, [:sol, :upbit, :krw], price)}
+  def handle_cast({:upbit_krw_price, price, :xrp}, state), do: {:noreply, put_in(state, [:xrp, :upbit, :krw], price)}
+  def handle_cast({:upbit_krw_price, price, :eos}, state), do: {:noreply, put_in(state, [:eos, :upbit, :krw], price)}
+  def handle_cast({:upbit_krw_price, price, :btg}, state), do: {:noreply, put_in(state, [:btg, :upbit, :krw], price)}
 
-
-  def handle_cast({:bybit_btc_usdt_price, price}, state), do: {:noreply, Map.put(state, :bybit_btc_usdt_price, price)}
-  def handle_cast({:bybit_sol_usdt_price, price}, state), do: {:noreply, Map.put(state, :bybit_sol_usdt_price, price)}
-  def handle_cast({:bybit_xrp_usdt_price, price}, state), do: {:noreply, Map.put(state, :bybit_xrp_usdt_price, price)}
-  def handle_cast({:bybit_eos_usdt_price, price}, state), do: {:noreply, Map.put(state, :bybit_eos_usdt_price, price)}
-  def handle_cast({:bybit_btg_usdt_price, price}, state), do: {:noreply, Map.put(state, :bybit_btg_usdt_price, price)}
+  def handle_cast({:bybit_usdt_price, price, :btc}, state), do: {:noreply, put_in(state, [:btc, :bybit, :usdt], price)}
+  def handle_cast({:bybit_usdt_price, price, :sol}, state), do: {:noreply, put_in(state, [:sol, :bybit, :usdt], price)}
+  def handle_cast({:bybit_usdt_price, price, :xrp}, state), do: {:noreply, put_in(state, [:xrp, :bybit, :usdt], price)}
+  def handle_cast({:bybit_usdt_price, price, :eos}, state), do: {:noreply, put_in(state, [:eos, :bybit, :usdt], price)}
+  def handle_cast({:bybit_usdt_price, price, :btg}, state), do: {:noreply, put_in(state, [:btg, :bybit, :usdt], price)}
 
   def handle_cast({:exchange_rate, rate}, state), do: {:noreply, Map.put(state, :exchange_rate, rate)}
 
-  def handle_call(:state, _from, state), do: {:reply, state, state}
+  def handle_call(:state, _from, state) do
+    new_state = state
+    |> Enum.map(fn {key, value} ->
+      if (key != :exchange_rate) do
+        bybit_usdt_price = value[:bybit][:usdt]
+        exchange_rate = state[:exchange_rate]
+        bybit_krw_price = get_krw_price(bybit_usdt_price, exchange_rate)
+        {key, put_in(value, [:bybit, :usdt_to_krw], bybit_krw_price)}
+      else
+        {key, value}
+      end
+    end)
+    |> Enum.map(fn {key, value} ->
+      if (key != :exchange_rate) do
+        upbit_krw_price = value[:upbit][:krw]
+        bybit_krw_price = value[:bybit][:usdt_to_krw]
+        kimp = get_kimp(upbit_krw_price, bybit_krw_price)
+        {key, put_in(value[:kimp], kimp)}
+      else
+        {key, value}
+      end
+    end)
+    |> Map.new()
+
+    {:reply, new_state, new_state}
+  end
+
+  defp get_krw_price(bybit_usdt_price, exchange_rate) when is_float(bybit_usdt_price) and is_float(exchange_rate) do
+    bybit_usdt_price * exchange_rate
+  end
+  defp get_krw_price(_, _), do: nil
+
+  defp get_kimp(upbit_krw_price, bybit_krw_price) when is_float(upbit_krw_price) and is_float(bybit_krw_price) do
+    (upbit_krw_price / bybit_krw_price - 1) * 100
+  end
+  defp get_kimp(_, _), do: nil
 end

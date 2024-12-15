@@ -71,11 +71,11 @@ defmodule Kimper.BybitPriceFetcher do
       price = message_json["data"]["lastPrice"] |> String.to_float()
 
       case message_json["topic"] do
-        @btc -> Storage.set_bybit_btc_usdt_price(price)
-        @sol -> Storage.set_bybit_sol_usdt_price(price)
-        @xrp -> Storage.set_bybit_xrp_usdt_price(price)
-        @eos -> Storage.set_bybit_eos_usdt_price(price)
-        @btg -> Storage.set_bybit_btg_usdt_price(price)
+        @btc -> Storage.set_bybit_usdt_price(price, :btc)
+        @sol -> Storage.set_bybit_usdt_price(price, :sol)
+        @xrp -> Storage.set_bybit_usdt_price(price, :xrp)
+        @eos -> Storage.set_bybit_usdt_price(price, :eos)
+        @btg -> Storage.set_bybit_usdt_price(price, :btg)
         _    -> IO.puts("## unexpected bybit topic")
       end
     end

@@ -20,7 +20,12 @@ defmodule Kimper.FundingRateNotifier do
         bot_token = System.get_env("TELEGRAM_BOT_TOKEN")
         telegram_url = "https://api.telegram.org/bot#{bot_token}/sendMessage"
         headers = [{"Content-Type", "application/json"}]
-        message = "Bybit #{english(coin_usd)} 펀딩비는 #{String.to_float(funding_rate) * 100}% 입니다."
+        english_usd = english_usd(coin_usd)
+        message = """
+        <Bybit>
+        - #{english_usd} 펀딩비: #{String.to_float(funding_rate) * 100}%
+        - #{english_usdt(english_usd)} 김프: #{}%
+        """
         body = Jason.encode!(%{
           chat_id: Map.get(@telegram_chat_id, coin_usd),
           text: message
@@ -57,6 +62,8 @@ defmodule Kimper.FundingRateNotifier do
   end
   defp extract_funding_rate(_), do: {:error, "## No funding rate found"}
 
-  defp english(:btc_usd), do: "BTCUSD"
-  defp english(:eth_usd), do: "ETHUSD"
+  defp english_usd(:btc_usd), do: "BTCUSD"
+  defp english_usd(:eth_usd), do: "ETHUSD"
+
+  defp english_usdt(english_usd), do: "#{english_usd}T"
 end

@@ -4,7 +4,6 @@ defmodule KimperWeb.HomeLive do
   alias Number.Delimit
 
   @update_interval 1_000 # 1초
-  @coin_tickers [:btc, :sol, :xrp, :eos, :btg]
 
   def mount(_params, _session, socket) do
     if connected?(socket) do
@@ -18,7 +17,7 @@ defmodule KimperWeb.HomeLive do
   end
 
   def handle_info(:update, socket) do
-    coins = @coin_tickers
+    coins = Map.keys(Storage.state)
     |> Enum.map(&to_coin/1)
     |> Enum.reject(&is_nil/1)
 
@@ -29,11 +28,9 @@ defmodule KimperWeb.HomeLive do
 
   defp to_coin(:btc) do
     storage = Storage.state
-    upbit_krw_price = Map.get(storage, :upbit_btc_krw_price)
-    bybit_usdt_price = Map.get(storage, :bybit_btc_usdt_price)
-    exchange_rate = Map.get(storage, :exchange_rate)
-    bybit_krw_price = get_krw_price(bybit_usdt_price, exchange_rate)
-    kimp = get_kimp(upbit_krw_price, bybit_krw_price)
+    upbit_krw_price = get_in(storage, [:btc, :upbit, :krw])
+    bybit_krw_price = get_in(storage, [:btc, :bybit, :usdt_to_krw])
+    kimp = get_in(storage, [:btc, :kimp])
 
     upbit_krw_price = to_str_price(upbit_krw_price)
     bybit_krw_price = to_str_price(bybit_krw_price)
@@ -50,11 +47,10 @@ defmodule KimperWeb.HomeLive do
   end
   defp to_coin(:sol) do
     storage = Storage.state
-    upbit_krw_price = Map.get(storage, :upbit_sol_krw_price)
-    bybit_usdt_price = Map.get(storage, :bybit_sol_usdt_price)
-    exchange_rate = Map.get(storage, :exchange_rate)
-    bybit_krw_price = get_krw_price(bybit_usdt_price, exchange_rate)
-    kimp = get_kimp(upbit_krw_price, bybit_krw_price)
+    upbit_krw_price = get_in(storage, [:sol, :upbit, :krw])
+    bybit_krw_price = get_in(storage, [:sol, :bybit, :usdt_to_krw])
+    kimp = get_in(storage, [:sol, :kimp])
+
 
     upbit_krw_price = to_str_price(upbit_krw_price)
     bybit_krw_price = to_str_price(bybit_krw_price)
@@ -72,11 +68,9 @@ defmodule KimperWeb.HomeLive do
   end
   defp to_coin(:xrp) do
     storage = Storage.state
-    upbit_krw_price = Map.get(storage, :upbit_xrp_krw_price)
-    bybit_usdt_price = Map.get(storage, :bybit_xrp_usdt_price)
-    exchange_rate = Map.get(storage, :exchange_rate)
-    bybit_krw_price = get_krw_price(bybit_usdt_price, exchange_rate)
-    kimp = get_kimp(upbit_krw_price, bybit_krw_price)
+    upbit_krw_price = get_in(storage, [:xrp, :upbit, :krw])
+    bybit_krw_price = get_in(storage, [:xrp, :bybit, :usdt_to_krw])
+    kimp = get_in(storage, [:xrp, :kimp])
 
     upbit_krw_price = to_str_price(upbit_krw_price)
     bybit_krw_price = to_str_price(bybit_krw_price)
@@ -94,11 +88,9 @@ defmodule KimperWeb.HomeLive do
   end
   defp to_coin(:eos) do
     storage = Storage.state
-    upbit_krw_price = Map.get(storage, :upbit_eos_krw_price)
-    bybit_usdt_price = Map.get(storage, :bybit_eos_usdt_price)
-    exchange_rate = Map.get(storage, :exchange_rate)
-    bybit_krw_price = get_krw_price(bybit_usdt_price, exchange_rate)
-    kimp = get_kimp(upbit_krw_price, bybit_krw_price)
+    upbit_krw_price = get_in(storage, [:eos, :upbit, :krw])
+    bybit_krw_price = get_in(storage, [:eos, :bybit, :usdt_to_krw])
+    kimp = get_in(storage, [:eos, :kimp])
 
     upbit_krw_price = to_str_price(upbit_krw_price)
     bybit_krw_price = to_str_price(bybit_krw_price)
@@ -116,11 +108,9 @@ defmodule KimperWeb.HomeLive do
   end
   defp to_coin(:btg) do
     storage = Storage.state
-    upbit_krw_price = Map.get(storage, :upbit_btg_krw_price)
-    bybit_usdt_price = Map.get(storage, :bybit_btg_usdt_price)
-    exchange_rate = Map.get(storage, :exchange_rate)
-    bybit_krw_price = get_krw_price(bybit_usdt_price, exchange_rate)
-    kimp = get_kimp(upbit_krw_price, bybit_krw_price)
+    upbit_krw_price = get_in(storage, [:btg, :upbit, :krw])
+    bybit_krw_price = get_in(storage, [:btg, :bybit, :usdt_to_krw])
+    kimp = get_in(storage, [:btg, :kimp])
 
     upbit_krw_price = to_str_price(upbit_krw_price)
     bybit_krw_price = to_str_price(bybit_krw_price)
@@ -142,16 +132,6 @@ defmodule KimperWeb.HomeLive do
   defp schedule_update() do
     Process.send_after(self(), :update, @update_interval)
   end
-
-  defp get_krw_price(bybit_usdt_price, exchange_rate) when is_float(bybit_usdt_price) and is_float(exchange_rate) do
-    bybit_usdt_price * exchange_rate
-  end
-  defp get_krw_price(_, _), do: nil
-
-  defp get_kimp(upbit_krw_price, bybit_krw_price) when is_float(upbit_krw_price) and is_float(bybit_krw_price) do
-    (upbit_krw_price / bybit_krw_price - 1) * 100
-  end
-  defp get_kimp(_, _), do: nil
 
   defp to_str_price(krw_price) when is_float(krw_price) do
     "#{round(krw_price) |> Delimit.number_to_delimited(precision: 0)}원"

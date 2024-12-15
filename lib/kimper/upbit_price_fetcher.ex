@@ -28,11 +28,11 @@ defmodule Kimper.UpbitPriceFetcher do
     price = message_json["trade_price"]
 
     case code do
-      @btc -> Storage.set_upbit_btc_krw_price(price)
-      @sol -> Storage.set_upbit_sol_krw_price(price)
-      @xrp -> Storage.set_upbit_xrp_krw_price(price)
-      @eos -> Storage.set_upbit_eos_krw_price(price)
-      @btg -> Storage.set_upbit_btg_krw_price(price)
+      @btc -> Storage.set_upbit_krw_price(price, :btc)
+      @sol -> Storage.set_upbit_krw_price(price, :sol)
+      @xrp -> Storage.set_upbit_krw_price(price, :xrp)
+      @eos -> Storage.set_upbit_krw_price(price, :eos)
+      @btg -> Storage.set_upbit_krw_price(price, :btg)
       _    -> nil
     end
 
