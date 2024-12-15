@@ -1,5 +1,6 @@
-defmodule Kimper.FundingRateNotifier do
-  alias Kimper.FundingRateNotifier
+defmodule Kimper.Notifier do
+  alias Kimper.Notifier
+  alias Kimper.Storage
   @coin_usd_list [:btc_usd, :eth_usd]
   @bybit_funding_rate_url %{
     btc_usd: "https://api.bytick.com/v5/market/funding/history?category=linear&symbol=BTCUSD&limit=1",
@@ -10,11 +11,11 @@ defmodule Kimper.FundingRateNotifier do
     eth_usd: "-1002391778061",
   }
 
-  def notify_funding_rate_iter do
-    Enum.each(@coin_usd_list, &FundingRateNotifier.notify_funding_rate/1)
+  def notify_iter do
+    Enum.each(@coin_usd_list, &Notifier.notify/1)
   end
 
-  def notify_funding_rate(coin_usd) do
+  def notify(coin_usd) do
     case fetch_funding_rate(coin_usd) do
       {:ok, funding_rate} ->
         bot_token = System.get_env("TELEGRAM_BOT_TOKEN")
@@ -22,9 +23,10 @@ defmodule Kimper.FundingRateNotifier do
         headers = [{"Content-Type", "application/json"}]
         english_usd = english_usd(coin_usd)
         message = """
+        ## 테스트
         <Bybit>
         - #{english_usd} 펀딩비: #{String.to_float(funding_rate) * 100}%
-        - #{english_usdt(english_usd)} 김프: #{}%
+        - #{english_usdt(english_usd)} 김프: #{kimp(coin_usd) |> Float.floor(2)}%
         """
         body = Jason.encode!(%{
           chat_id: Map.get(@telegram_chat_id, coin_usd),
@@ -66,4 +68,7 @@ defmodule Kimper.FundingRateNotifier do
   defp english_usd(:eth_usd), do: "ETHUSD"
 
   defp english_usdt(english_usd), do: "#{english_usd}T"
+
+  defp kimp(:btc_usd), do: Storage.state.btc.kimp
+  defp kimp(:eth_usd), do: Storage.state.eth.kimp # TODO: Storage에 ETH KIMP 계산 추가
 end

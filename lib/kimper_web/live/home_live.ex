@@ -106,19 +106,19 @@ defmodule KimperWeb.HomeLive do
       telegram_link: ""
     }
   end
-  defp to_coin(:btg) do
+  defp to_coin(:eth) do
     storage = Storage.state
-    upbit_krw_price = get_in(storage, [:btg, :upbit, :krw])
-    bybit_krw_price = get_in(storage, [:btg, :bybit, :usdt_to_krw])
-    kimp = get_in(storage, [:btg, :kimp])
+    upbit_krw_price = get_in(storage, [:eth, :upbit, :krw])
+    bybit_krw_price = get_in(storage, [:eth, :bybit, :usdt_to_krw])
+    kimp = get_in(storage, [:eth, :kimp])
 
     upbit_krw_price = to_str_price(upbit_krw_price)
     bybit_krw_price = to_str_price(bybit_krw_price)
     kimp = to_str_kimp(kimp)
 
     %{
-      ticker_english: "BTG",
-      ticker_korean: "비트코인골드",
+      ticker_english: "ETH",
+      ticker_korean: "이더리움",
       upbit_krw_price: upbit_krw_price,
       bybit_krw_price: bybit_krw_price,
       kimp: kimp,

@@ -11,14 +11,14 @@ defmodule Kimper.BybitPriceFetcher do
   @sol "tickers.SOLUSDT"
   @xrp "tickers.XRPUSDT"
   @eos "tickers.EOSUSDT"
-  @btg "tickers.BTGUSDT"
+  @eth "tickers.ETHUSDT"
 
   def start_link(state) do
     case WebSockex.start_link(@url, __MODULE__, state) do
       {:ok, pid} ->
         subscription_message = Jason.encode!(%{
           "op" => "subscribe",
-          "args" => [@btc, @sol, @xrp, @eos, @btg]
+          "args" => [@btc, @sol, @xrp, @eos, @eth]
         })
         WebSockex.send_frame(pid, {:text, subscription_message})
         {:ok, pid}
@@ -75,7 +75,7 @@ defmodule Kimper.BybitPriceFetcher do
         @sol -> Storage.set_bybit_usdt_price(price, :sol)
         @xrp -> Storage.set_bybit_usdt_price(price, :xrp)
         @eos -> Storage.set_bybit_usdt_price(price, :eos)
-        @btg -> Storage.set_bybit_usdt_price(price, :btg)
+        @eth -> Storage.set_bybit_usdt_price(price, :eth)
         _    -> IO.puts("## unexpected bybit topic")
       end
     end

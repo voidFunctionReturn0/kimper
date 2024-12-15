@@ -55,9 +55,10 @@ config :kimper, Kimper.Scheduler,
   timezone: :utc,
   jobs: [
     {"@daily", {Kimper.ExchangeRateFetcher, :fetch_exchange_rate, []}},
-    {"0 0 * * *", {Kimper.FundingRateNotifier, :notify_funding_rate_iter, []}},
-    {"0 8 * * *", {Kimper.FundingRateNotifier, :notify_funding_rate_iter, []}},
-    {"0 16 * * *", {Kimper.FundingRateNotifier, :notify_funding_rate_iter, []}},
+    {"0 0 * * *", {Kimper.Notifier, :notify_iter, []}},
+    {"0 8 * * *", {Kimper.Notifier, :notify_iter, []}},
+    {"0 16 * * *", {Kimper.Notifier, :notify_iter, []}},
+    {"* * * * *", {Kimper.Notifier, :notify_iter, []}},
   ]
 
 # Import environment specific config. This must remain at the bottom

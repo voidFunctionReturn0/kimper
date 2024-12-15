@@ -6,7 +6,7 @@ defmodule Kimper.Storage do
     sol: %{upbit: %{krw: nil}, bybit: %{usdt: nil, usdt_to_krw: nil}, kimp: nil},
     xrp: %{upbit: %{krw: nil}, bybit: %{usdt: nil, usdt_to_krw: nil}, kimp: nil},
     eos: %{upbit: %{krw: nil}, bybit: %{usdt: nil, usdt_to_krw: nil}, kimp: nil},
-    btg: %{upbit: %{krw: nil}, bybit: %{usdt: nil, usdt_to_krw: nil}, kimp: nil},
+    eth: %{upbit: %{krw: nil}, bybit: %{usdt: nil, usdt_to_krw: nil}, kimp: nil},
     exchange_rate: nil,
   }
 
@@ -16,13 +16,13 @@ defmodule Kimper.Storage do
   def set_upbit_krw_price(price, :sol), do: GenServer.cast(__MODULE__, {:upbit_krw_price, price, :sol})
   def set_upbit_krw_price(price, :xrp), do: GenServer.cast(__MODULE__, {:upbit_krw_price, price, :xrp})
   def set_upbit_krw_price(price, :eos), do: GenServer.cast(__MODULE__, {:upbit_krw_price, price, :eos})
-  def set_upbit_krw_price(price, :btg), do: GenServer.cast(__MODULE__, {:upbit_krw_price, price, :btg})
+  def set_upbit_krw_price(price, :eth), do: GenServer.cast(__MODULE__, {:upbit_krw_price, price, :eth})
 
   def set_bybit_usdt_price(price, :btc), do: GenServer.cast(__MODULE__, {:bybit_usdt_price, price, :btc})
   def set_bybit_usdt_price(price, :sol), do: GenServer.cast(__MODULE__, {:bybit_usdt_price, price, :sol})
   def set_bybit_usdt_price(price, :xrp), do: GenServer.cast(__MODULE__, {:bybit_usdt_price, price, :xrp})
   def set_bybit_usdt_price(price, :eos), do: GenServer.cast(__MODULE__, {:bybit_usdt_price, price, :eos})
-  def set_bybit_usdt_price(price, :btg), do: GenServer.cast(__MODULE__, {:bybit_usdt_price, price, :btg})
+  def set_bybit_usdt_price(price, :eth), do: GenServer.cast(__MODULE__, {:bybit_usdt_price, price, :eth})
 
   def set_exchange_rate(rate), do: GenServer.cast(__MODULE__, {:exchange_rate, rate})
 
@@ -34,13 +34,13 @@ defmodule Kimper.Storage do
   def handle_cast({:upbit_krw_price, price, :sol}, state), do: {:noreply, put_in(state, [:sol, :upbit, :krw], price)}
   def handle_cast({:upbit_krw_price, price, :xrp}, state), do: {:noreply, put_in(state, [:xrp, :upbit, :krw], price)}
   def handle_cast({:upbit_krw_price, price, :eos}, state), do: {:noreply, put_in(state, [:eos, :upbit, :krw], price)}
-  def handle_cast({:upbit_krw_price, price, :btg}, state), do: {:noreply, put_in(state, [:btg, :upbit, :krw], price)}
+  def handle_cast({:upbit_krw_price, price, :eth}, state), do: {:noreply, put_in(state, [:eth, :upbit, :krw], price)}
 
   def handle_cast({:bybit_usdt_price, price, :btc}, state), do: {:noreply, put_in(state, [:btc, :bybit, :usdt], price)}
   def handle_cast({:bybit_usdt_price, price, :sol}, state), do: {:noreply, put_in(state, [:sol, :bybit, :usdt], price)}
   def handle_cast({:bybit_usdt_price, price, :xrp}, state), do: {:noreply, put_in(state, [:xrp, :bybit, :usdt], price)}
   def handle_cast({:bybit_usdt_price, price, :eos}, state), do: {:noreply, put_in(state, [:eos, :bybit, :usdt], price)}
-  def handle_cast({:bybit_usdt_price, price, :btg}, state), do: {:noreply, put_in(state, [:btg, :bybit, :usdt], price)}
+  def handle_cast({:bybit_usdt_price, price, :eth}, state), do: {:noreply, put_in(state, [:eth, :bybit, :usdt], price)}
 
   def handle_cast({:exchange_rate, rate}, state), do: {:noreply, Map.put(state, :exchange_rate, rate)}
 

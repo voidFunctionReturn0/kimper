@@ -7,14 +7,14 @@ defmodule Kimper.UpbitPriceFetcher do
   @sol "KRW-SOL"
   @xrp "KRW-XRP"
   @eos "KRW-EOS"
-  @btg "KRW-BTG"
+  @eth "KRW-ETH"
 
   def start_link(state) do
     {:ok, pid} = WebSockex.start_link(@url, __MODULE__, state)
 
     subscription_message = Jason.encode!([
       %{"ticket" => "kimper"},
-      %{"type" => "ticker", "codes" => [@btc, @sol, @xrp, @eos, @btg]},
+      %{"type" => "ticker", "codes" => [@btc, @sol, @xrp, @eos, @eth]},
     ])
 
     WebSockex.send_frame(pid, {:text, subscription_message})
@@ -32,7 +32,7 @@ defmodule Kimper.UpbitPriceFetcher do
       @sol -> Storage.set_upbit_krw_price(price, :sol)
       @xrp -> Storage.set_upbit_krw_price(price, :xrp)
       @eos -> Storage.set_upbit_krw_price(price, :eos)
-      @btg -> Storage.set_upbit_krw_price(price, :btg)
+      @eth -> Storage.set_upbit_krw_price(price, :eth)
       _    -> nil
     end
 
