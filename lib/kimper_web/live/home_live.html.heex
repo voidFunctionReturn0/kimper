@@ -11,10 +11,10 @@
                 <tr class="text-base font-bold w-full flex">
                     <th class="flex-auto px-4 py-2 min-w-40">코인</th>
                     <th class="text-my_red-1 flex-auto px-4 py-2 min-w-24">김프</th>
-                    <th class="flex-auto px-4 py-2 min-w-40">업비트</th>
-                    <th class="flex-auto px-4 py-2 min-w-40">바이비트</th>
-                    <th class="flex-auto px-4 py-2 min-w-24">김프차트</th>
-                    <th class="flex-auto px-4 py-2 min-w-24">매일시세</th>
+                    <th class="flex-auto px-4 py-2 min-w-40 hidden md:table-cell">업비트</th>
+                    <th class="flex-auto px-4 py-2 min-w-40 hidden md:table-cell">바이비트</th>
+                    <th class="flex-auto px-4 py-2 min-w-24 hidden md:table-cell">김프차트</th>
+                    <th class="flex-auto px-4 py-2 min-w-24 ">텔레그램</th>
                 </tr>
                 <tbody>
                     <%= for coin <- @coins do %>
@@ -24,10 +24,10 @@
                                 <span class="text-my_gray-4 text-xs"> · <%= coin.ticker_korean %></span></td>
                             <%!-- TODO: 김프 양수면 파랗게? --%>
                             <td class="text-my_red-1 flex-auto px-4 py-2 min-w-24"><%= coin.kimp %></td> 
-                            <td class="flex-auto px-4 py-2 min-w-40"><%= coin.upbit_krw_price %></td>
-                            <td class="flex-auto px-4 py-2 min-w-40"><%= coin.bybit_krw_price %></td>
-                            <td class="flex-auto px-4 py-2 min-w-24"><button class="btn-red">차트보기</button></td>
-                            <td class="flex-auto px-4 py-2 min-w-24"><button class="btn-blue" type="button" onclick={"window.open('#{coin.telegram_link}')"}>텔레그램</button></td>
+                            <td class="flex-auto px-4 py-2 min-w-40 hidden md:table-cell"><%= coin.upbit_krw_price %></td>
+                            <td class="flex-auto px-4 py-2 min-w-40 hidden md:table-cell"><%= coin.bybit_krw_price %></td>
+                            <td class="flex-auto px-4 py-2 min-w-24 hidden md:table-cell"><button class="btn-red">차트보기</button></td>
+                            <td class="flex-auto px-4 py-2 min-w-24"><button class="btn-blue" type="button" onclick={"window.open('#{coin.telegram_link}')"}>알림받기</button></td>
                         </tr>
                     <% end %>
                 </tbody>

@@ -14,6 +14,7 @@ defmodule Kimper.BybitPriceFetcher do
   @eth "tickers.ETHUSDT"
 
   def start_link(state) do
+    Logger.info("Starting BybitPriceFetcher with args: #{inspect(state)}")
     case WebSockex.start_link(@url, __MODULE__, state) do
       {:ok, pid} ->
         subscription_message = Jason.encode!(%{
@@ -31,6 +32,7 @@ defmodule Kimper.BybitPriceFetcher do
 
   ## TODO: init 실행 안됨 -> 하트비트 실행 안됨
   def init(state) do
+    Logger.info("Initializing BybitPriceFetcher with args: #{inspect(state)}")
     schedule_heartbeat()
     {:ok, state}
   end

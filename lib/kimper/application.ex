@@ -12,7 +12,7 @@ defmodule Kimper.Application do
     children = [
       Kimper.Storage,
       Kimper.UpbitPriceFetcher,
-      Kimper.BybitPriceFetcher,
+      {Kimper.BybitPriceFetcher, %{}},
       Kimper.ExchangeRateFetcher,
       KimperWeb.Telemetry,
       {DNSCluster, query: Application.get_env(:kimper, :dns_cluster_query) || :ignore},
