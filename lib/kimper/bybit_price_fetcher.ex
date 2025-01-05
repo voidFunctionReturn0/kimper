@@ -1,21 +1,18 @@
-# TODO: 자꾸 셧다운되는 문제 해결 필요
-
 defmodule Kimper.BybitPriceFetcher do
-   use WebSockex
-   require Logger
-   alias Kimper.Storage
+  use WebSockex
+  require Logger
+  alias Kimper.Storage
 
-  @url "wss://stream.bybit.com/v5/public/spot"
-  @heartbeat_interval 20_000 # 20초
+  @url "wss://stream.bybit.com/v5/public/linear"
   @btc "tickers.BTCUSDT"
   @sol "tickers.SOLUSDT"
   @xrp "tickers.XRPUSDT"
   @eos "tickers.EOSUSDT"
   @eth "tickers.ETHUSDT"
 
-  def start_link(state) do
-    Logger.info("Starting BybitPriceFetcher with args: #{inspect(state)}")
-    case WebSockex.start_link(@url, __MODULE__, state) do
+  @spec start_link(any()) :: {:error, any()} | {:ok, pid()}
+  def start_link(_state) do
+    case WebSockex.start_link(@url, __MODULE__, %{}, name: __MODULE__) do
       {:ok, pid} ->
         subscription_message = Jason.encode!(%{
           "op" => "subscribe",
@@ -25,52 +22,23 @@ defmodule Kimper.BybitPriceFetcher do
         {:ok, pid}
 
       {:error, reason} ->
-        Logger.error("## Failed to start WebSocket: #{inspect(reason)}")
+        Logger.error("WebSocket 연결 실패: #{inspect(reason)}")
         {:error, reason}
     end
-  end
-
-  ## TODO: init 실행 안됨 -> 하트비트 실행 안됨
-  def init(state) do
-    Logger.info("Initializing BybitPriceFetcher with args: #{inspect(state)}")
-    schedule_heartbeat()
-    {:ok, state}
-  end
-
-  defp schedule_heartbeat do
-    Process.send_after(self(), :send_heartbeat, @heartbeat_interval)
-  end
-
-  def handle_cast(:send_heartbeat, state) do
-    case send_heartbeat(self()) do
-      :ok                -> Logger.info("## Heartbeat sent successfully")
-      {:error, reason}   -> Logger.error("## Failed to send Heartbeat: #{inspect(reason)}")
-    end
-
-    schedule_heartbeat()
-    {:ok, state}
-  end
-
-  def handle_cast({:error, reason}, state) do
-    Logger.error("## Error in WebSocket: #{inspect(reason)}")
-    {:noreply, state}
-  end
-
-  defp send_heartbeat(pid) do
-    heartbeat_message = Jason.encode!(%{"op" => "ping"})
-    WebSockex.send_frame(pid, {:text, heartbeat_message})
-  end
-
-  def handle_frame({:text, %{"success" => true, "ret_msg" => "pong"}}, state) do
-    Logger.info("## Received pong")
-    {:ok, state}
   end
 
   def handle_frame({:text, message}, state) do
     message_json = Jason.decode!(message)
 
-    if Map.has_key?(message_json, "data") do
-      price = message_json["data"]["lastPrice"] |> String.to_float()
+    price = message_json
+    |> Map.get("data", %{})
+    |> Map.get("lastPrice", nil)
+
+    topic = message_json
+    |> Map.get("topic", nil)
+
+    if price != nil and topic != nil do
+      price = String.to_float(price)
 
       case message_json["topic"] do
         @btc -> Storage.set_bybit_usdt_price(price, :btc)
@@ -78,15 +46,15 @@ defmodule Kimper.BybitPriceFetcher do
         @xrp -> Storage.set_bybit_usdt_price(price, :xrp)
         @eos -> Storage.set_bybit_usdt_price(price, :eos)
         @eth -> Storage.set_bybit_usdt_price(price, :eth)
-        _    -> IO.puts("## unexpected bybit topic")
+        _    -> Logger.error("## unexpected bybit topic")
       end
     end
 
     {:ok, state}
   end
 
-  def handle_disconnect(reason, state) do
-    Logger.error("## Disconnected from WebSocket: #{inspect(reason)}")
+  def handle_disconnect(_reason, state) do
+    Logger.error("WebSocket 연결 끊김, 다시 연결 시도 중...")
     {:reconnect, state}
   end
 end
