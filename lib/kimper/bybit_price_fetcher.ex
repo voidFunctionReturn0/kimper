@@ -1,3 +1,5 @@
+# TODO: 20초마다 하트비트 ping 보내기?
+
 defmodule Kimper.BybitPriceFetcher do
   use WebSockex
   require Logger
