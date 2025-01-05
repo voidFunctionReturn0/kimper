@@ -1,3 +1,5 @@
+# TODO: 모바일 뷰에서 정렬 꺠짐
+
 defmodule KimperWeb.HomeLive do
   use KimperWeb, :live_view
   alias Kimper.Storage
