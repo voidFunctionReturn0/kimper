@@ -2,13 +2,13 @@ defmodule Kimper.Storage do
   use GenServer
 
   @initial_state %{
+    coins: [:btc, :sol, :xrp, :eos, :eth],
     btc: %{upbit: %{krw: nil}, bybit: %{usdt: nil, usdt_to_krw: nil}, kimp: nil},
     sol: %{upbit: %{krw: nil}, bybit: %{usdt: nil, usdt_to_krw: nil}, kimp: nil},
     xrp: %{upbit: %{krw: nil}, bybit: %{usdt: nil, usdt_to_krw: nil}, kimp: nil},
     eos: %{upbit: %{krw: nil}, bybit: %{usdt: nil, usdt_to_krw: nil}, kimp: nil},
     eth: %{upbit: %{krw: nil}, bybit: %{usdt: nil, usdt_to_krw: nil}, kimp: nil},
     exchange_rate: nil,
-    coins: [:btc, :sol, :xrp, :eos, :eth]
   }
 
   def start_link(_), do: GenServer.start_link(__MODULE__, @initial_state, name: __MODULE__)
