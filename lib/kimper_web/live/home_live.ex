@@ -12,8 +12,11 @@ defmodule KimperWeb.HomeLive do
       Process.send_after(self(), :update, 0)
     end
 
+    # TODO: exchange_rate는 임시로 추가함. 나중에 제거해야 함. 환율이 매일 업데이트되는지 확인해보고
     socket = socket
     |> assign(coins: [])
+    |> assign(exchange_rate: "...")
+
 
     {:ok, socket, layout: false}
   end
@@ -25,7 +28,8 @@ defmodule KimperWeb.HomeLive do
 
     schedule_update()
 
-    {:noreply, socket |> assign(coins: coins)}
+    # TODO: exchange_rate는 임시로 추가함. 나중에 제거해야 함. 환율이 매일 업데이트되는지 확인해보고
+    {:noreply, socket |> assign(coins: coins) |> assign(exchange_rate: Storage.state.exchange_rate)}
   end
 
   defp to_coin(:btc) do
