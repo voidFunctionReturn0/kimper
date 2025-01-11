@@ -1,5 +1,3 @@
-# TODO: 하루 세 번 알림이 오는지 확인(셧다운이 원인이었으면 25-01-05 21:15 이후로 발생 안 해야 함)
-
 defmodule Kimper.Notifier do
   alias Kimper.Notifier
   alias Kimper.Storage
