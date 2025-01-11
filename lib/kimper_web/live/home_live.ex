@@ -15,6 +15,7 @@ defmodule KimperWeb.HomeLive do
     # TODO: exchange_rate는 임시로 추가함. 나중에 제거해야 함. 환율이 매일 업데이트되는지 확인해보고
     socket = socket
     |> assign(coins: [])
+    |> assign(update_in: "...")
     |> assign(exchange_rate: "...")
 
 
@@ -29,7 +30,13 @@ defmodule KimperWeb.HomeLive do
     schedule_update()
 
     # TODO: exchange_rate는 임시로 추가함. 나중에 제거해야 함. 환율이 매일 업데이트되는지 확인해보고
-    {:noreply, socket |> assign(coins: coins) |> assign(exchange_rate: Storage.state.exchange_rate)}
+    {
+      :noreply,
+      socket
+      |> assign(coins: coins)
+      |> assign(update_in: update_in(Timex.now()))
+      |> assign(exchange_rate: Storage.state.exchange_rate)
+    }
   end
 
   defp to_coin(:btc) do
@@ -148,4 +155,27 @@ defmodule KimperWeb.HomeLive do
     "#{Float.round(kimp, 2)}%"
   end
   defp to_str_kimp(_), do: "..."
+
+  defp update_in(utc_current_time) do
+    current_hour = utc_current_time.hour
+    next_update_hour = cond do
+      current_hour in 0..7    -> 8
+      current_hour in 8..15   -> 16
+      current_hour in 16..23  -> 24
+    end
+    left_hour = next_update_hour - current_hour - 1
+    left_minute = 59 - utc_current_time.minute
+    left_second = 59 - utc_current_time.second
+
+    [left_hour, left_minute, left_second] = [left_hour, left_minute, left_second]
+    |> Enum.map(&format_to_double_zero/1)
+
+    "#{left_hour}:#{left_minute}:#{left_second}"
+  end
+
+  defp format_to_double_zero(number) when is_integer(number) do
+    number
+    |> Integer.to_string()
+    |> String.pad_leading(2, "0")
+  end
 end

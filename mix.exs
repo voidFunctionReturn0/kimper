@@ -59,6 +59,7 @@ defmodule Kimper.MixProject do
       {:httpoison, "~> 2.2"},
       {:quantum, "~> 3.5"},
       {:dotenv, "~> 3.1"},
+      {:timex, "~> 3.7"},
     ]
   end
 

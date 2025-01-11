@@ -1,9 +1,9 @@
 <div class="w-full h-full flex flex-col items-center text-my_black-2">
     <nav class="w-full h-16 bg-my_black-1" />
-    <main class="w-full max-w-3xl flex flex-col gap-10 py-16">
-        <section class="w-full flex flex-col">
-            <div class="w-full flex gap-5 px-4 py-2">
-                <span class="text-2xl font-bold">
+    <main class="w-full max-w-3xl flex flex-col gap-12 py-16">
+        <section class="section1">
+            <div class="label-div1">
+                <span class="label1">
                     김치 프리미엄
                 </span>
                 <span>
@@ -35,6 +35,17 @@
                     <% end %>
                 </tbody>
             </table>
+        </section>
+        <section class="section1">
+            <div class="label-div1">
+                <span class="flex-auto label1">
+                    펀딩비
+                </span>
+                <span class="flex-auto label1 text-my_gray-5 text-end">
+                    <%!-- 펀딩비 남은 시간 --%>
+                    <%= @update_in %>
+                </span>
+            </div>
         </section>
     </main>
     <footer class="w-full flex flex-col items-center border-my_gray-1 border-t">

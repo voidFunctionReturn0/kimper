@@ -16,4 +16,16 @@
     .btn-red {
         @apply bg-my_light_red-1 text-my_red-2
     }
+
+    .section1 {
+        @apply w-full flex flex-col
+    }
+
+    .label-div1 {
+        @apply w-full flex gap-5 px-4 py-2
+    }
+
+    .label1 {
+        @apply text-2xl font-bold
+    }
 }
