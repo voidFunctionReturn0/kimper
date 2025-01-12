@@ -1,3 +1,5 @@
+# TODO: BybitFundingRate과 통합 필요(중복 코드 제거하고 Storage에서 펀딩비 가져오도록 수정, 펀딩피 지급 시간에 펀딩비 조회하도록 하는 기능 추가)
+
 defmodule Kimper.Notifier do
   alias Kimper.Notifier
   alias Kimper.Storage
@@ -46,6 +48,7 @@ defmodule Kimper.Notifier do
 
   defp fetch_funding_rate(coin_usd) do
     url = Map.get(@bybit_funding_rate_url, coin_usd)
+
     case HTTPoison.get(url) do
       {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
         body

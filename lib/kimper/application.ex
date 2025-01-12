@@ -13,7 +13,7 @@ defmodule Kimper.Application do
       Kimper.Storage,
       Kimper.UpbitPriceFetcher,
       {Kimper.BybitPriceFetcher, %{}},
-      Kimper.BybitFundingFeeFetcher,
+      Kimper.BybitFundingRateFetcher,
       Kimper.ExchangeRateFetcher,
       KimperWeb.Telemetry,
       {DNSCluster, query: Application.get_env(:kimper, :dns_cluster_query) || :ignore},
