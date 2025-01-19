@@ -12,7 +12,6 @@ defmodule Kimper.BybitPriceFetcher do
   @eos "tickers.EOSUSDT"
   @eth "tickers.ETHUSDT"
 
-  @spec start_link(any()) :: {:error, any()} | {:ok, pid()}
   def start_link(_state) do
     case WebSockex.start_link(@url, __MODULE__, %{}, name: __MODULE__) do
       {:ok, pid} ->

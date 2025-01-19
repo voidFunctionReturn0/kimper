@@ -16,14 +16,15 @@ module.exports = {
       colors: {
         my_black: {
           1: "#111111",
-          2: "#202434"
+          2: "#202434",
         },
         my_red: {
           1: "#FF0000",
-          2: "#D11E1E"
+          2: "#D11E1E",
         },
         my_light_red: {
-          1: "#FFE9E9"
+          1: "#FFE9E9",
+          2: "#FFC3A6",
         },
         my_blue: {
           1: "#1E68D1",
@@ -37,6 +38,9 @@ module.exports = {
           3: "#5B6072",
           4: "#ADB2C4",
           5: "#ABABAB",
+          6: "#F4F6F8",
+          7: "#E0E0E0",
+          8: "#686868",
         }
       }
     },

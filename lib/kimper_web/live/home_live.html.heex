@@ -36,7 +36,7 @@
                 </tbody>
             </table>
         </section>
-        <section class="section1">
+        <section class="section1 gap-3">
             <div class="label-div1">
                 <span class="flex-auto label1">
                     펀딩비
@@ -44,6 +44,20 @@
                 <span class="flex-auto label1 text-my_gray-5 text-end">
                     <%= @update_in %>
                 </span>
+            </div>
+            <div class="w-full flex overflow-auto whitespace-nowrap gap-2.5 mx-4">
+                <%= for coin <- @coins do %>
+                    <div class="w-28 flex flex-col gap-7 p-2.5 border rounded-lg bg-my_gray-6 border-my_gray-7">
+                        <div class="w-full flex flex-col gap-1">
+                            <span class="font-bold text-base"><%= coin.ticker_korean %></span>
+                            <span class="font-bold text-xl text-my_red-1"><%= coin.bybit_usd_funding_rate %></span>
+                        </div>
+                        <div class="w-full flex flex-col items-end gap-1">
+                            <span class="text-xs text-my_gray-4">8시간 마다</span>
+                            <button class="bg-my_light_red-2 text-my_gray-8" type="button" onclick={"window.open('#{coin.telegram_link}')"}>알림받기</button>
+                        </div>
+                    </div>
+                <% end %>
             </div>
         </section>
     </main>

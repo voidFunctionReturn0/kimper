@@ -1,13 +1,12 @@
-# TODO: 작성 중
 defmodule Kimper.BybitFundingRateFetcher do
   use GenServer
   require Logger
+  alias Kimper.Storage
 
-  @interval 1_000 # 60초
-  @coins ["BTCUSD", "ETHUSD"]
+  @interval 1_000 # TODO: 60초로 수정하기
+  @coins ["BTCUSD", "SOLUSD", "XRPUSD", "EOSUSD", "ETHUSD"]
   @url "https://api.bytick.com/v5/market/funding/history?category=linear&limit=1"
 
-  @spec start_link(any()) :: :ignore | {:error, any()} | {:ok, pid()}
   def start_link(_) do
     GenServer.start_link(__MODULE__, %{}, name: __MODULE__)
   end
@@ -17,14 +16,35 @@ defmodule Kimper.BybitFundingRateFetcher do
     {:ok, state}
   end
 
+  @spec schedule_fetch_funding_rate() :: reference()
   def schedule_fetch_funding_rate() do
     Process.send_after(self(), :fetch_funding_rate, @interval)
   end
 
   def handle_info(:fetch_funding_rate, state) do
-    @coins
-    |> Enum.map(&fetch_funding_rate/1)
-    |> Enum.each(&IO.inspect/1)
+    funding_rates = Enum.map(@coins, &fetch_funding_rate/1)
+    funding_rates = Enum.zip(@coins, funding_rates)
+
+    Enum.each(funding_rates, fn {coin, funding_rate} ->
+      if funding_rate != nil do
+        case Float.parse(funding_rate) do
+          {rate, _} ->
+            case coin do
+              "BTCUSD"  -> Storage.set_bybit_usd_funding_rate(rate, :btc)
+              "SOLUSD"  -> Storage.set_bybit_usd_funding_rate(rate, :sol)
+              "XRPUSD"  -> Storage.set_bybit_usd_funding_rate(rate, :xrp)
+              "EOSUSD"  -> Storage.set_bybit_usd_funding_rate(rate, :eos)
+              "ETHUSD"  -> Storage.set_bybit_usd_funding_rate(rate, :eth)
+              _         -> Logger.error("Unexpected coin")
+            end
+
+          _  ->
+            Logger.error("Failed to parse funding rate")
+        end
+      end
+
+      {:noreply, funding_rates}
+    end)
 
     schedule_fetch_funding_rate()
 

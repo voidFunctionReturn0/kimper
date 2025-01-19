@@ -3,11 +3,11 @@ defmodule Kimper.Storage do
 
   @initial_state %{
     coins: [:btc, :sol, :xrp, :eos, :eth],
-    btc: %{upbit: %{krw: nil}, bybit: %{usdt: nil, usdt_to_krw: nil}, kimp: nil},
-    sol: %{upbit: %{krw: nil}, bybit: %{usdt: nil, usdt_to_krw: nil}, kimp: nil},
-    xrp: %{upbit: %{krw: nil}, bybit: %{usdt: nil, usdt_to_krw: nil}, kimp: nil},
-    eos: %{upbit: %{krw: nil}, bybit: %{usdt: nil, usdt_to_krw: nil}, kimp: nil},
-    eth: %{upbit: %{krw: nil}, bybit: %{usdt: nil, usdt_to_krw: nil}, kimp: nil},
+    btc: %{upbit: %{krw: nil}, bybit: %{usdt: nil, usdt_to_krw: nil, usd_funding_rate: nil}, kimp: nil},
+    sol: %{upbit: %{krw: nil}, bybit: %{usdt: nil, usdt_to_krw: nil, usd_funding_rate: nil}, kimp: nil},
+    xrp: %{upbit: %{krw: nil}, bybit: %{usdt: nil, usdt_to_krw: nil, usd_funding_rate: nil}, kimp: nil},
+    eos: %{upbit: %{krw: nil}, bybit: %{usdt: nil, usdt_to_krw: nil, usd_funding_rate: nil}, kimp: nil},
+    eth: %{upbit: %{krw: nil}, bybit: %{usdt: nil, usdt_to_krw: nil, usd_funding_rate: nil}, kimp: nil},
     exchange_rate: nil,
   }
 
@@ -24,6 +24,12 @@ defmodule Kimper.Storage do
   def set_bybit_usdt_price(price, :xrp), do: GenServer.cast(__MODULE__, {:bybit_usdt_price, price, :xrp})
   def set_bybit_usdt_price(price, :eos), do: GenServer.cast(__MODULE__, {:bybit_usdt_price, price, :eos})
   def set_bybit_usdt_price(price, :eth), do: GenServer.cast(__MODULE__, {:bybit_usdt_price, price, :eth})
+
+  def set_bybit_usd_funding_rate(rate, :btc), do: GenServer.cast(__MODULE__, {:bybit_usd_funding_rate, rate, :btc})
+  def set_bybit_usd_funding_rate(rate, :sol), do: GenServer.cast(__MODULE__, {:bybit_usd_funding_rate, rate, :sol})
+  def set_bybit_usd_funding_rate(rate, :xrp), do: GenServer.cast(__MODULE__, {:bybit_usd_funding_rate, rate, :xrp})
+  def set_bybit_usd_funding_rate(rate, :eos), do: GenServer.cast(__MODULE__, {:bybit_usd_funding_rate, rate, :eos})
+  def set_bybit_usd_funding_rate(rate, :eth), do: GenServer.cast(__MODULE__, {:bybit_usd_funding_rate, rate, :eth})
 
   def set_exchange_rate(rate), do: GenServer.cast(__MODULE__, {:exchange_rate, rate})
 
@@ -42,6 +48,12 @@ defmodule Kimper.Storage do
   def handle_cast({:bybit_usdt_price, price, :xrp}, state), do: {:noreply, put_in(state, [:xrp, :bybit, :usdt], price)}
   def handle_cast({:bybit_usdt_price, price, :eos}, state), do: {:noreply, put_in(state, [:eos, :bybit, :usdt], price)}
   def handle_cast({:bybit_usdt_price, price, :eth}, state), do: {:noreply, put_in(state, [:eth, :bybit, :usdt], price)}
+
+  def handle_cast({:bybit_usd_funding_rate, rate, :btc}, state), do: {:noreply, put_in(state, [:btc, :bybit, :usd_funding_rate], rate)}
+  def handle_cast({:bybit_usd_funding_rate, rate, :sol}, state), do: {:noreply, put_in(state, [:sol, :bybit, :usd_funding_rate], rate)}
+  def handle_cast({:bybit_usd_funding_rate, rate, :xrp}, state), do: {:noreply, put_in(state, [:xrp, :bybit, :usd_funding_rate], rate)}
+  def handle_cast({:bybit_usd_funding_rate, rate, :eos}, state), do: {:noreply, put_in(state, [:eos, :bybit, :usd_funding_rate], rate)}
+  def handle_cast({:bybit_usd_funding_rate, rate, :eth}, state), do: {:noreply, put_in(state, [:eth, :bybit, :usd_funding_rate], rate)}
 
   def handle_cast({:exchange_rate, rate}, state), do: {:noreply, Map.put(state, :exchange_rate, rate)}
 

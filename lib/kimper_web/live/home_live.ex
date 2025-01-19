@@ -12,12 +12,11 @@ defmodule KimperWeb.HomeLive do
       Process.send_after(self(), :update, 0)
     end
 
-    # TODO: exchange_rate는 임시로 추가함. 나중에 제거해야 함. 환율이 매일 업데이트되는지 확인해보고
+    # TODO: exchange_rate는 임시로 추가함. 나중에 제거해야 함. 환율이 매일 업데이트되는지 확인해보고. 1/19 기준 1456.10781342임
     socket = socket
     |> assign(coins: [])
     |> assign(update_in: "...")
     |> assign(exchange_rate: "...")
-
 
     {:ok, socket, layout: false}
   end
@@ -29,7 +28,7 @@ defmodule KimperWeb.HomeLive do
 
     schedule_update()
 
-    # TODO: exchange_rate는 임시로 추가함. 나중에 제거해야 함. 환율이 매일 업데이트되는지 확인해보고
+    # TODO: exchange_rate는 임시로 추가함. 나중에 제거해야 함. 환율이 매일 업데이트되는지 확인해보고. 1/19 기준 1456.10781342임
     {
       :noreply,
       socket
@@ -44,10 +43,12 @@ defmodule KimperWeb.HomeLive do
     upbit_krw_price = get_in(storage, [:btc, :upbit, :krw])
     bybit_krw_price = get_in(storage, [:btc, :bybit, :usdt_to_krw])
     kimp = get_in(storage, [:btc, :kimp])
+    bybit_usd_funding_rate = get_in(storage, [:btc, :bybit, :usd_funding_rate])
 
     upbit_krw_price = to_str_price(upbit_krw_price)
     bybit_krw_price = to_str_price(bybit_krw_price)
     kimp = to_str_kimp(kimp)
+    bybit_usd_funding_rate = to_str_funding_rate(bybit_usd_funding_rate)
 
     %{
       ticker_english: "BTC",
@@ -56,6 +57,7 @@ defmodule KimperWeb.HomeLive do
       bybit_krw_price: bybit_krw_price,
       kimp: kimp,
       telegram_link: "https://t.me/+jUKF4BTqgQNhOGY1",
+      bybit_usd_funding_rate: bybit_usd_funding_rate,
     }
   end
   defp to_coin(:sol) do
@@ -63,11 +65,12 @@ defmodule KimperWeb.HomeLive do
     upbit_krw_price = get_in(storage, [:sol, :upbit, :krw])
     bybit_krw_price = get_in(storage, [:sol, :bybit, :usdt_to_krw])
     kimp = get_in(storage, [:sol, :kimp])
-
+    bybit_usd_funding_rate = get_in(storage, [:btc, :bybit, :usd_funding_rate])
 
     upbit_krw_price = to_str_price(upbit_krw_price)
     bybit_krw_price = to_str_price(bybit_krw_price)
     kimp = to_str_kimp(kimp)
+    bybit_usd_funding_rate = to_str_funding_rate(bybit_usd_funding_rate)
 
     %{
       ticker_english: "SOL",
@@ -76,7 +79,8 @@ defmodule KimperWeb.HomeLive do
       bybit_krw_price: bybit_krw_price,
       kimp: kimp,
       # TODO: 텔레그램 링크 필요
-      telegram_link: ""
+      telegram_link: "",
+      bybit_usd_funding_rate: bybit_usd_funding_rate,
     }
   end
   defp to_coin(:xrp) do
@@ -84,10 +88,12 @@ defmodule KimperWeb.HomeLive do
     upbit_krw_price = get_in(storage, [:xrp, :upbit, :krw])
     bybit_krw_price = get_in(storage, [:xrp, :bybit, :usdt_to_krw])
     kimp = get_in(storage, [:xrp, :kimp])
+    bybit_usd_funding_rate = get_in(storage, [:btc, :bybit, :usd_funding_rate])
 
     upbit_krw_price = to_str_price(upbit_krw_price)
     bybit_krw_price = to_str_price(bybit_krw_price)
     kimp = to_str_kimp(kimp)
+    bybit_usd_funding_rate = to_str_funding_rate(bybit_usd_funding_rate)
 
     %{
       ticker_english: "XRP",
@@ -96,7 +102,8 @@ defmodule KimperWeb.HomeLive do
       bybit_krw_price: bybit_krw_price,
       kimp: kimp,
       # TODO: 텔레그램 링크 필요
-      telegram_link: ""
+      telegram_link: "",
+      bybit_usd_funding_rate: bybit_usd_funding_rate,
     }
   end
   defp to_coin(:eos) do
@@ -104,10 +111,12 @@ defmodule KimperWeb.HomeLive do
     upbit_krw_price = get_in(storage, [:eos, :upbit, :krw])
     bybit_krw_price = get_in(storage, [:eos, :bybit, :usdt_to_krw])
     kimp = get_in(storage, [:eos, :kimp])
+    bybit_usd_funding_rate = get_in(storage, [:btc, :bybit, :usd_funding_rate])
 
     upbit_krw_price = to_str_price(upbit_krw_price)
     bybit_krw_price = to_str_price(bybit_krw_price)
     kimp = to_str_kimp(kimp)
+    bybit_usd_funding_rate = to_str_funding_rate(bybit_usd_funding_rate)
 
     %{
       ticker_english: "EOS",
@@ -116,7 +125,8 @@ defmodule KimperWeb.HomeLive do
       bybit_krw_price: bybit_krw_price,
       kimp: kimp,
       # TODO: 텔레그램 링크 필요
-      telegram_link: ""
+      telegram_link: "",
+      bybit_usd_funding_rate: bybit_usd_funding_rate,
     }
   end
   defp to_coin(:eth) do
@@ -124,10 +134,12 @@ defmodule KimperWeb.HomeLive do
     upbit_krw_price = get_in(storage, [:eth, :upbit, :krw])
     bybit_krw_price = get_in(storage, [:eth, :bybit, :usdt_to_krw])
     kimp = get_in(storage, [:eth, :kimp])
+    bybit_usd_funding_rate = get_in(storage, [:btc, :bybit, :usd_funding_rate])
 
     upbit_krw_price = to_str_price(upbit_krw_price)
     bybit_krw_price = to_str_price(bybit_krw_price)
     kimp = to_str_kimp(kimp)
+    bybit_usd_funding_rate = to_str_funding_rate(bybit_usd_funding_rate)
 
     %{
       ticker_english: "ETH",
@@ -135,11 +147,10 @@ defmodule KimperWeb.HomeLive do
       upbit_krw_price: upbit_krw_price,
       bybit_krw_price: bybit_krw_price,
       kimp: kimp,
-      # TODO: 텔레그램 링크 필요
-      telegram_link: ""
+      telegram_link: "https://t.me/+Pgjk1X2adfQ0MGFl",
+      bybit_usd_funding_rate: bybit_usd_funding_rate,
     }
   end
-  # TODO: ETH 추가 https://t.me/+Pgjk1X2adfQ0MGFl
   defp to_coin(_), do: nil
 
   defp schedule_update() do
@@ -155,6 +166,11 @@ defmodule KimperWeb.HomeLive do
     "#{Float.round(kimp, 2)}%"
   end
   defp to_str_kimp(_), do: "..."
+
+  defp to_str_funding_rate(funding_rate) when is_float(funding_rate) do
+    "+#{Float.round(funding_rate * 100, 2)}" # TODO: 부호 분기 처리 or 퍼센트로 바꾸기
+  end
+  defp to_str_funding_rate(_), do: "..."
 
   defp update_in(utc_current_time) do
     current_hour = utc_current_time.hour
