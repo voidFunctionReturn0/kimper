@@ -3,7 +3,7 @@ defmodule Kimper.BybitFundingRateFetcher do
   require Logger
   alias Kimper.Storage
 
-  @interval 1_000 # TODO: 60초로 수정하기
+  @interval 60_000
   @coins ["BTCUSD", "SOLUSD", "XRPUSD", "EOSUSD", "ETHUSD"]
   @url "https://api.bytick.com/v5/market/funding/history?category=linear&limit=1"
 
