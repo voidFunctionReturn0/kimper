@@ -168,7 +168,7 @@ defmodule KimperWeb.HomeLive do
   defp to_str_kimp(_), do: "..."
 
   defp to_str_funding_rate(funding_rate) when is_float(funding_rate) do
-    "+#{Float.round(funding_rate * 100, 2)}" # TODO: 부호 분기 처리 or 퍼센트로 바꾸기
+    "#{Float.round(funding_rate * 100, 2)}%"
   end
   defp to_str_funding_rate(_), do: "..."
 
