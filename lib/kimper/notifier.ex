@@ -6,10 +6,16 @@ defmodule Kimper.Notifier do
   @coin_usd_list [:btc_usd, :eth_usd]
   @bybit_funding_rate_url %{
     btc_usd: "https://api.bytick.com/v5/market/funding/history?category=linear&symbol=BTCUSD&limit=1",
+    sol_usd: "https://api.bytick.com/v5/market/funding/history?category=linear&symbol=SOLUSD&limit=1",
+    xrp_usd: "https://api.bytick.com/v5/market/funding/history?category=linear&symbol=XRPUSD&limit=1",
+    eos_usd: "https://api.bytick.com/v5/market/funding/history?category=linear&symbol=EOSUSD&limit=1",
     eth_usd: "https://api.bytick.com/v5/market/funding/history?category=linear&symbol=ETHUSD&limit=1",
   }
   @telegram_chat_id %{
     btc_usd: "-1002363514381",
+    sol_usd: "-1002356719531",
+    xrp_usd: "-1002346966522",
+    eos_usd: "-1002430099761",
     eth_usd: "-1002391778061",
   }
 
@@ -67,10 +73,16 @@ defmodule Kimper.Notifier do
   defp extract_funding_rate(_), do: {:error, "## No funding rate found"}
 
   defp english_usd(:btc_usd), do: "BTCUSD"
+  defp english_usd(:sol_usd), do: "SOLUSD"
+  defp english_usd(:xrp_usd), do: "XRPUSD"
+  defp english_usd(:eos_usd), do: "EOSUSD"
   defp english_usd(:eth_usd), do: "ETHUSD"
 
   defp english_usdt(english_usd), do: "#{english_usd}T"
 
   defp kimp(:btc_usd), do: Storage.state.btc.kimp
-  defp kimp(:eth_usd), do: Storage.state.eth.kimp # TODO: Storage에 ETH KIMP 계산 추가
+  defp kimp(:sol_usd), do: Storage.state.sol.kimp
+  defp kimp(:xrp_usd), do: Storage.state.xrp.kimp
+  defp kimp(:eos_usd), do: Storage.state.eos.kimp
+  defp kimp(:eth_usd), do: Storage.state.eth.kimp
 end
