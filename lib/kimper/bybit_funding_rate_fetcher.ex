@@ -16,7 +16,6 @@ defmodule Kimper.BybitFundingRateFetcher do
     {:ok, state}
   end
 
-  @spec schedule_fetch_funding_rate() :: reference()
   def schedule_fetch_funding_rate() do
     Process.send_after(self(), :fetch_funding_rate, @interval)
   end
