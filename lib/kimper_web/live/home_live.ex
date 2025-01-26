@@ -1,7 +1,6 @@
 # TODO: 모바일 뷰에서 정렬 꺠짐
 
 defmodule KimperWeb.HomeLive do
-alias Kimper.Kospi
   use KimperWeb, :live_view
   alias Kimper.Storage
   alias Number.Delimit
@@ -18,6 +17,7 @@ alias Kimper.Kospi
     socket = socket
     |> assign(coins: [])
     |> assign(kospi: %{recent_value: nil, change_amount: nil, change_rate: nil})
+    |> assign(kosdaq: %{recent_value: nil, change_amount: nil, change_rate: nil})
     |> assign(update_in: @default_string)
     |> assign(exchange_rate: @default_string)
 
@@ -30,11 +30,21 @@ alias Kimper.Kospi
     |> Enum.reject(&is_nil/1)
 
     kospi = Storage.state.kospi
-    change_amount = if (is_number(kospi.recent_value) and is_number(kospi.previous_close)) do
+    kospi_recent_value = if is_number(kospi.recent_value), do: Float.round(kospi.recent_value, 2)
+    kospi_change_amount = if (is_number(kospi.recent_value) and is_number(kospi.previous_close)) do
       Float.round(kospi.recent_value - kospi.previous_close, 2)
     end
-    change_rate = if (is_number(kospi.recent_value) and is_number(kospi.previous_close)) do
+    kospi_change_rate = if (is_number(kospi.recent_value) and is_number(kospi.previous_close)) do
       Float.round((kospi.recent_value - kospi.previous_close) / kospi.previous_close * 100, 2)
+    end
+
+    kosdaq = Storage.state.kosdaq
+    kosdaq_recent_value = if is_number(kosdaq.recent_value), do: Float.round(kosdaq.recent_value, 2)
+    kosdaq_change_amount = if (is_number(kosdaq.recent_value) and is_number(kosdaq.previous_close)) do
+      Float.round(kosdaq.recent_value - kosdaq.previous_close, 2)
+    end
+    kosdaq_change_rate = if (is_number(kosdaq.recent_value) and is_number(kosdaq.previous_close)) do
+      Float.round((kosdaq.recent_value - kosdaq.previous_close) / kosdaq.previous_close * 100, 2)
     end
 
     schedule_update()
@@ -45,9 +55,14 @@ alias Kimper.Kospi
       socket
       |> assign(coins: coins)
       |> assign(kospi: %{
-        recent_value: Float.round(kospi.recent_value, 2),
-        change_amount: change_amount,
-        change_rate: change_rate,
+        recent_value: kospi_recent_value,
+        change_amount: kospi_change_amount,
+        change_rate: kospi_change_rate,
+      })
+      |> assign(kosdaq: %{
+        recent_value: kosdaq_recent_value,
+        change_amount: kosdaq_change_amount,
+        change_rate: kosdaq_change_rate,
       })
       |> assign(update_in: update_in(Timex.now()))
       |> assign(exchange_rate: Storage.state.exchange_rate)
@@ -209,5 +224,60 @@ alias Kimper.Kospi
     number
     |> Integer.to_string()
     |> String.pad_leading(2, "0")
+  end
+
+  defp render_indicator(assigns, indicator_name, recent_value, change_amount, change_rate) do
+    assigns = assigns
+    |> assign(indicator_name: indicator_name)
+    |> assign(recent_value: recent_value)
+    |> assign(change_amount: change_amount)
+    |> assign(change_rate: change_rate)
+
+    ~H"""
+      <div class="border rounded-2xl border-my_gray-7 flex flex-col gap-2 px-4 py-5">
+        <div class="gap-1 text-my_black-2">
+            <div class="text-body1">
+                <%= @indicator_name %>
+            </div>
+            <div class="text-body-bold1">
+                <%= @recent_value %>
+            </div>
+        </div>
+        <div class="text-body1 flex gap-2">
+            <div>
+                <span class={
+                    cond do
+                        @change_amount > 0 -> "text-my_red-3"
+                        @change_amount < 0 -> "text-my_blue-2"
+                    end
+                }>
+                    <%!-- TODO: 화살표를 디자인 파일에 있는 것처럼 수정 필요 --%>
+                    <%= cond do %>
+                        <% @change_amount > 0 -> %>
+                            ▲
+                        <% @change_amount < 0 -> %>
+                            ▼
+                    <% end %>
+                    <%= @change_amount %>
+                </span>
+            </div>
+            <div>
+                <span class={
+                    cond do
+                        @change_rate > 0 -> "text-my_red-3"
+                        @change_rate < 0 -> "text-my_blue-2"
+                    end
+                }>
+                  <%= cond do %>
+                    <% @change_rate > 0 -> %>
+                        +<%= @change_rate %>%
+                    <% @change_rate < 0 -> %>
+                        -<%= @change_rate %>%
+                  <% end %>
+                </span>
+            </div>
+        </div>
+      </div>
+    """
   end
 end

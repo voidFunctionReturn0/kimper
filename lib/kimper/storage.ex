@@ -1,6 +1,6 @@
 defmodule Kimper.Storage do
   use GenServer
-  alias Kimper.Kospi
+  alias Kimper.Indicator
 
   @initial_state %{
     coins: [:btc, :sol, :xrp, :eos, :eth],
@@ -10,7 +10,8 @@ defmodule Kimper.Storage do
     eos: %{upbit: %{krw: nil}, bybit: %{usdt: nil, usdt_to_krw: nil, usd_funding_rate: nil}, kimp: nil},
     eth: %{upbit: %{krw: nil}, bybit: %{usdt: nil, usdt_to_krw: nil, usd_funding_rate: nil}, kimp: nil},
     exchange_rate: nil,
-    kospi: %Kospi{recent_value: nil, previous_close: nil}
+    kospi: %Indicator{},
+    kosdaq: %Indicator{},
   }
 
   def start_link(_), do: GenServer.start_link(__MODULE__, @initial_state, name: __MODULE__)
@@ -34,8 +35,8 @@ defmodule Kimper.Storage do
   def set_bybit_usd_funding_rate(rate, :eth), do: GenServer.cast(__MODULE__, {:bybit_usd_funding_rate, rate, :eth})
 
   def set_exchange_rate(rate), do: GenServer.cast(__MODULE__, {:exchange_rate, rate})
-
   def set_kospi(kospi), do: GenServer.cast(__MODULE__, {:kospi, kospi})
+  def set_kosdaq(kosdaq), do: GenServer.cast(__MODULE__, {:kosdaq, kosdaq})
 
   def state, do: GenServer.call(__MODULE__, :state)
 
@@ -60,8 +61,8 @@ defmodule Kimper.Storage do
   def handle_cast({:bybit_usd_funding_rate, rate, :eth}, state), do: {:noreply, put_in(state, [:eth, :bybit, :usd_funding_rate], rate)}
 
   def handle_cast({:exchange_rate, rate}, state), do: {:noreply, Map.put(state, :exchange_rate, rate)}
-
   def handle_cast({:kospi, kospi}, state), do: {:noreply, Map.put(state, :kospi, kospi)}
+  def handle_cast({:kosdaq, kosdaq}, state), do: {:noreply, Map.put(state, :kosdaq, kosdaq)}
 
   def handle_call(:state, _from, state) do
     new_state = state

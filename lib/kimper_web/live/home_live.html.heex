@@ -8,52 +8,8 @@
                 </span>
             </div>
             <div class="w-full flex overflow-auto whitespace-nowrap gap-2.5 mx-4 no-scroll">
-                <div class="border rounded-2xl border-my_gray-7 flex flex-col gap-2 px-4 py-5">
-                    <div class="gap-1 text-my_black-2">
-                        <div class="text-body1">
-                            코스피
-                        </div>
-                        <div class="text-body-bold1">
-                            <%= @kospi.recent_value %>
-                        </div>
-                    </div>
-                    <div class="text-body1 flex gap-2">
-                        <div>
-                            <% change_amount = @kospi.change_amount %>
-                            <span class={
-                                cond do
-                                    change_amount > 0 -> "text-my_red-3"
-                                    change_amount < 0 -> "text-my_blue-2"
-                                end
-                            }>
-                                <%!-- TODO: 화살표를 디자인 파일에 있는 것처럼 수정 필요 --%>
-                                <%= cond do %>
-                                    <% change_amount > 0 -> %>
-                                        ▲
-                                    <% change_amount < 0 -> %>
-                                        ▼
-                                <% end %>
-                                <%= change_amount %>
-                            </span>
-                        </div>
-                        <div>
-                            <% change_rate = @kospi.change_rate %>
-                            <span class={
-                                cond do
-                                    change_rate > 0 -> "text-my_red-3"
-                                    change_rate < 0 -> "text-my_blue-2"
-                                end
-                            }>
-                                <%= cond do %>
-                                <% change_rate > 0 -> %>
-                                    +<%= change_rate %>%
-                                <% change_rate < 0 -> %>
-                                    -<%= change_rate %>%
-                                <% end %>
-                            </span>
-                        </div>
-                    </div>
-                </div>
+                <%= render_indicator(assigns, "코스피", @kospi.recent_value, @kospi.change_amount, @kospi.change_rate) %>
+                <%= render_indicator(assigns, "코스닥", @kosdaq.recent_value, @kosdaq.change_amount, @kosdaq.change_rate) %>
             </div>
         </section>
         <section class="section1">
@@ -103,7 +59,7 @@
             </div>
             <div class="w-full flex overflow-auto whitespace-nowrap gap-2.5 mx-4 no-scroll">
                 <%= for coin <- @coins do %>
-                    <div class="w-28 flex flex-col gap-7 p-2.5 border rounded-lg bg-my_gray-6 border-my_gray-7">
+                    <div class="w-32 flex flex-col gap-7 p-2.5 border rounded-lg bg-my_gray-6 border-my_gray-7">
                         <div class="w-full flex flex-col gap-1">
                             <span class="font-bold text-base"><%= coin.ticker_english %>USD</span>
                             <span class="font-bold text-xl text-my_red-1"><%= coin.bybit_usd_funding_rate %></span> <!-- TODO: 음수면 파랗게 -->
