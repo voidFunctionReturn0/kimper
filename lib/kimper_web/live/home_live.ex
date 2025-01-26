@@ -6,6 +6,7 @@ defmodule KimperWeb.HomeLive do
   alias Number.Delimit
 
   @update_interval 1_000 # 1초
+  @default_string "..."
 
   def mount(_params, _session, socket) do
     if connected?(socket) do
@@ -15,8 +16,9 @@ defmodule KimperWeb.HomeLive do
     # TODO: exchange_rate는 임시로 추가함. 나중에 제거해야 함. 환율이 매일 업데이트되는지 확인해보고. 1/19 기준 1456.10781342임
     socket = socket
     |> assign(coins: [])
-    |> assign(update_in: "...")
-    |> assign(exchange_rate: "...")
+    |> assign(kospi: @default_string)
+    |> assign(update_in: @default_string)
+    |> assign(exchange_rate: @default_string)
 
     {:ok, socket, layout: false}
   end
@@ -26,6 +28,10 @@ defmodule KimperWeb.HomeLive do
     |> Enum.map(&to_coin/1)
     |> Enum.reject(&is_nil/1)
 
+    kospi = if(Storage.state.kospi != nil) do
+      Storage.state.kospi
+    end
+
     schedule_update()
 
     # TODO: exchange_rate는 임시로 추가함. 나중에 제거해야 함. 환율이 매일 업데이트되는지 확인해보고. 1/19 기준 1456.10781342임
@@ -33,6 +39,7 @@ defmodule KimperWeb.HomeLive do
       :noreply,
       socket
       |> assign(coins: coins)
+      |> assign(kospi: kospi)
       |> assign(update_in: update_in(Timex.now()))
       |> assign(exchange_rate: Storage.state.exchange_rate)
     }

@@ -12,6 +12,7 @@ defmodule Kimper.BybitFundingRateFetcher do
   end
 
   def init(state) do
+    Process.send_after(self(), :fetch_funding_rate, 0)
     schedule_fetch_funding_rate()
     {:ok, state}
   end

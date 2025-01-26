@@ -65,17 +65,19 @@ defmodule Kimper.Storage do
   def handle_call(:state, _from, state) do
     new_state = state
     |> Enum.map(fn {key, value} ->
-      if (key != :exchange_rate and key != :coins) do
+      if (key in state.coins) do
+        IO.puts("## Storage state!!!")
         bybit_usdt_price = value[:bybit][:usdt]
         exchange_rate = state[:exchange_rate]
         bybit_krw_price = get_krw_price(bybit_usdt_price, exchange_rate)
         {key, put_in(value, [:bybit, :usdt_to_krw], bybit_krw_price)}
       else
+        IO.puts("## Storage state no!!!")
         {key, value}
       end
     end)
     |> Enum.map(fn {key, value} ->
-      if (key != :exchange_rate and key != :coins) do
+      if (key in state.coins) do
         upbit_krw_price = value[:upbit][:krw]
         bybit_krw_price = value[:bybit][:usdt_to_krw]
         kimp = get_kimp(upbit_krw_price, bybit_krw_price)
