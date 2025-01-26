@@ -55,8 +55,7 @@
                             <span class="font-bold text-xl text-my_red-1"><%= coin.bybit_usd_funding_rate %></span>
                         </div>
                         <div class="w-full flex flex-col items-end gap-1">
-                            <span class="text-xs text-my_gray-4">8시간 마다</span>
-                            <button class="bg-my_light_red-2 text-my_gray-8" type="button" onclick={"window.open('#{coin.telegram_link}')"}>알림받기</button>
+                            <button class="btn-blue" type="button" onclick={"window.open('#{coin.telegram_link}')"}>알림받기</button>
                         </div>
                     </div>
                 <% end %>
