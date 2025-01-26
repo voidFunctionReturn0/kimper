@@ -47,11 +47,11 @@
                     <%= @update_in %>
                 </span>
             </div>
-            <div class="w-full flex overflow-auto whitespace-nowrap gap-2.5 mx-4">
+            <div class="w-full flex overflow-auto whitespace-nowrap gap-2.5 mx-4 no-scroll">
                 <%= for coin <- @coins do %>
-                    <div class="w-28 flex flex-col gap-7 p-2.5 border rounded-lg bg-my_gray-6 border-my_gray-7">
+                    <div class="w-32 flex flex-col gap-7 p-2.5 border rounded-lg bg-my_gray-6 border-my_gray-7">
                         <div class="w-full flex flex-col gap-1">
-                            <span class="font-bold text-base"><%= coin.ticker_korean %></span>
+                            <span class="font-bold text-base"><%= coin.ticker_english %>USD</span>
                             <span class="font-bold text-xl text-my_red-1"><%= coin.bybit_usd_funding_rate %></span>
                         </div>
                         <div class="w-full flex flex-col items-end gap-1">
@@ -72,3 +72,8 @@
         </div>
     </footer>
 </div>
+<style>
+    .no-scroll::-webkit-scrollbar {
+        display: none; /* Chrome, Safari, Edge */
+    }
+</style>
