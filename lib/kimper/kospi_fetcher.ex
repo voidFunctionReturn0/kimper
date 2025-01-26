@@ -1,6 +1,7 @@
 defmodule Kimper.KospiFetcher do
   use GenServer
   alias Kimper.Storage
+  alias Kimper.Kospi
 
   @interval 1_000
   @initial_state %{kospi: nil}
@@ -24,10 +25,10 @@ defmodule Kimper.KospiFetcher do
     {:noreply, %{state | kospi: new_kospi}}
   end
 
-  # TODO: 실시간인지 확인해보기
+  # TODO: regularMarketPrice이 실시간인지 확인해보기
   defp fetch_kospi() do
     response = HTTPoison.get!(@url).body |> Jason.decode!()
-    %{"chart" => %{"result" => [%{"meta" => %{"regularMarketPrice" => kospi}}]}} = response
-    kospi
+    %{"chart" => %{"result" => [%{"meta" => %{"regularMarketPrice" => recent_value, "previousClose" => previous_close}}]}} = response
+    %Kospi{recent_value: recent_value, previous_close: previous_close}
   end
 end

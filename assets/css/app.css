@@ -28,4 +28,12 @@
     .label1 {
         @apply text-2xl font-bold
     }
+
+    .text-body1 {
+        @apply text-sm
+    }
+
+    .text-body-bold1 {
+        @apply text-xl font-bold
+    }
 }

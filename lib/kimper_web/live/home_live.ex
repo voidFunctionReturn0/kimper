@@ -1,6 +1,7 @@
 # TODO: 모바일 뷰에서 정렬 꺠짐
 
 defmodule KimperWeb.HomeLive do
+alias Kimper.Kospi
   use KimperWeb, :live_view
   alias Kimper.Storage
   alias Number.Delimit
@@ -16,7 +17,7 @@ defmodule KimperWeb.HomeLive do
     # TODO: exchange_rate는 임시로 추가함. 나중에 제거해야 함. 환율이 매일 업데이트되는지 확인해보고. 1/19 기준 1456.10781342임
     socket = socket
     |> assign(coins: [])
-    |> assign(kospi: @default_string)
+    |> assign(kospi: %{recent_value: nil, change_amount: nil, change_rate: nil})
     |> assign(update_in: @default_string)
     |> assign(exchange_rate: @default_string)
 
@@ -28,8 +29,12 @@ defmodule KimperWeb.HomeLive do
     |> Enum.map(&to_coin/1)
     |> Enum.reject(&is_nil/1)
 
-    kospi = if(Storage.state.kospi != nil) do
-      Storage.state.kospi
+    kospi = Storage.state.kospi
+    change_amount = if (is_number(kospi.recent_value) and is_number(kospi.previous_close)) do
+      Float.round(kospi.recent_value - kospi.previous_close, 2)
+    end
+    change_rate = if (is_number(kospi.recent_value) and is_number(kospi.previous_close)) do
+      Float.round((kospi.recent_value - kospi.previous_close) / kospi.previous_close * 100, 2)
     end
 
     schedule_update()
@@ -39,7 +44,11 @@ defmodule KimperWeb.HomeLive do
       :noreply,
       socket
       |> assign(coins: coins)
-      |> assign(kospi: kospi)
+      |> assign(kospi: %{
+        recent_value: Float.round(kospi.recent_value, 2),
+        change_amount: change_amount,
+        change_rate: change_rate,
+      })
       |> assign(update_in: update_in(Timex.now()))
       |> assign(exchange_rate: Storage.state.exchange_rate)
     }

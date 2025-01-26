@@ -1,5 +1,6 @@
 defmodule Kimper.Storage do
   use GenServer
+  alias Kimper.Kospi
 
   @initial_state %{
     coins: [:btc, :sol, :xrp, :eos, :eth],
@@ -9,7 +10,7 @@ defmodule Kimper.Storage do
     eos: %{upbit: %{krw: nil}, bybit: %{usdt: nil, usdt_to_krw: nil, usd_funding_rate: nil}, kimp: nil},
     eth: %{upbit: %{krw: nil}, bybit: %{usdt: nil, usdt_to_krw: nil, usd_funding_rate: nil}, kimp: nil},
     exchange_rate: nil,
-    kospi: nil,
+    kospi: %Kospi{recent_value: nil, previous_close: nil}
   }
 
   def start_link(_), do: GenServer.start_link(__MODULE__, @initial_state, name: __MODULE__)
@@ -66,13 +67,11 @@ defmodule Kimper.Storage do
     new_state = state
     |> Enum.map(fn {key, value} ->
       if (key in state.coins) do
-        IO.puts("## Storage state!!!")
         bybit_usdt_price = value[:bybit][:usdt]
         exchange_rate = state[:exchange_rate]
         bybit_krw_price = get_krw_price(bybit_usdt_price, exchange_rate)
         {key, put_in(value, [:bybit, :usdt_to_krw], bybit_krw_price)}
       else
-        IO.puts("## Storage state no!!!")
         {key, value}
       end
     end)

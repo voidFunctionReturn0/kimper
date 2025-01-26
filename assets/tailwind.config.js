@@ -21,6 +21,7 @@ module.exports = {
         my_red: {
           1: "#FF0000",
           2: "#D11E1E",
+          3: "#FD3333",
         },
         my_light_red: {
           1: "#FFE9E9",
@@ -28,6 +29,7 @@ module.exports = {
         },
         my_blue: {
           1: "#1E68D1",
+          2: "#2770FC",
         },
         my_light_blue: {
           1: "#E9F2FF",
