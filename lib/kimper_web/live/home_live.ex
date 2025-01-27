@@ -109,8 +109,7 @@ defmodule KimperWeb.HomeLive do
       upbit_krw_price: upbit_krw_price,
       bybit_krw_price: bybit_krw_price,
       kimp: kimp,
-      # TODO: 텔레그램 링크 필요
-      telegram_link: "",
+      telegram_link: "https://t.me/+nF6o_U4jPyZlNjFl",
       bybit_usd_funding_rate: bybit_usd_funding_rate,
     }
   end
@@ -132,8 +131,7 @@ defmodule KimperWeb.HomeLive do
       upbit_krw_price: upbit_krw_price,
       bybit_krw_price: bybit_krw_price,
       kimp: kimp,
-      # TODO: 텔레그램 링크 필요
-      telegram_link: "",
+      telegram_link: "https://t.me/+9zYVkg6z48hhMTZl",
       bybit_usd_funding_rate: bybit_usd_funding_rate,
     }
   end
@@ -155,8 +153,7 @@ defmodule KimperWeb.HomeLive do
       upbit_krw_price: upbit_krw_price,
       bybit_krw_price: bybit_krw_price,
       kimp: kimp,
-      # TODO: 텔레그램 링크 필요
-      telegram_link: "",
+      telegram_link: "https://t.me/+-aGzpJz2als5Njk1",
       bybit_usd_funding_rate: bybit_usd_funding_rate,
     }
   end

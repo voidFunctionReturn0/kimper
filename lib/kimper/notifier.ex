@@ -18,7 +18,6 @@ defmodule Kimper.Notifier do
     eos_usd: "-1002430099761",
     eth_usd: "-1002391778061",
   }
-
   def notify_iter do
     Enum.each(@coin_usd_list, &Notifier.notify/1)
   end
