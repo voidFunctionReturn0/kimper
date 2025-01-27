@@ -3,7 +3,7 @@
 defmodule Kimper.Notifier do
   alias Kimper.Notifier
   alias Kimper.Storage
-  @coin_usd_list [:btc_usd, :eth_usd]
+  @coin_usd_list [:btc_usd, :sol_usd, :xrp_usd, :eos_usd, :eth_usd]
   @bybit_funding_rate_url %{
     btc_usd: "https://api.bytick.com/v5/market/funding/history?category=linear&symbol=BTCUSD&limit=1",
     sol_usd: "https://api.bytick.com/v5/market/funding/history?category=linear&symbol=SOLUSD&limit=1",
