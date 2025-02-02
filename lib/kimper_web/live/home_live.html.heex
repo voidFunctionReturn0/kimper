@@ -12,9 +12,13 @@
                 <%= render_indicator(assigns, "코스닥", @kosdaq.recent_value, @kosdaq.change_amount, @kosdaq.change_rate) %>
                 <%= render_indicator(assigns, "나스닥 종합", @nasdaq.recent_value, @nasdaq.change_amount, @nasdaq.change_rate) %>
                 <%= render_indicator(assigns, "S&P 500", @snp500.recent_value, @snp500.change_amount, @snp500.change_rate) %>
+                <%= render_indicator(assigns, "다우산업", @dowjones.recent_value, @dowjones.change_amount, @dowjones.change_rate) %>
 
                 <% btc = @coins |> Enum.filter(fn coin -> coin.ticker_korean == "비트코인" end) |> List.first() %>
                 <%= render_indicator(assigns, "비트코인", get_in(btc, [:upbit_krw_price]), get_in(btc, [:change_amount]), get_in(btc, [:change_rate])) %>
+
+                <% eth = @coins |> Enum.filter(fn coin -> coin.ticker_korean == "이더리움" end) |> List.first() %>
+                <%= render_indicator(assigns, "이더리움", get_in(eth, [:upbit_krw_price]), get_in(eth, [:change_amount]), get_in(eth, [:change_rate])) %>
             </div>
         </section>
         <section class="section1">

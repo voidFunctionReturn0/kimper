@@ -19,6 +19,7 @@ defmodule KimperWeb.HomeLive do
     |> assign(kosdaq: %{recent_value: nil, change_amount: nil, change_rate: nil})
     |> assign(nasdaq: %{recent_value: nil, change_amount: nil, change_rate: nil})
     |> assign(snp500: %{recent_value: nil, change_amount: nil, change_rate: nil})
+    |> assign(dowjones: %{recent_value: nil, change_amount: nil, change_rate: nil})
     |> assign(update_in: @default_string)
 
     {:ok, socket, layout: false}
@@ -65,6 +66,15 @@ defmodule KimperWeb.HomeLive do
       Float.round((snp500.recent_value - snp500.previous_close) / snp500.previous_close * 100, 2)
     end
 
+    dowjones = Storage.state.dowjones
+    dowjones_recent_value = if is_number(dowjones.recent_value), do: Float.round(dowjones.recent_value, 2)
+    dowjones_change_amount = if (is_number(dowjones.recent_value) and is_number(dowjones.previous_close)) do
+      Float.round(dowjones.recent_value - dowjones.previous_close, 2)
+    end
+    dowjones_change_rate = if (is_number(dowjones.recent_value) and is_number(dowjones.previous_close)) do
+      Float.round((dowjones.recent_value - dowjones.previous_close) / dowjones.previous_close * 100, 2)
+    end
+
     schedule_update()
 
     {
@@ -90,6 +100,11 @@ defmodule KimperWeb.HomeLive do
         recent_value: snp500_recent_value,
         change_amount: snp500_change_amount,
         change_rate: snp500_change_rate,
+      })
+      |> assign(dowjones: %{
+        recent_value: dowjones_recent_value,
+        change_amount: dowjones_change_amount,
+        change_rate: dowjones_change_rate,
       })
       |> assign(update_in: update_in(Timex.now()))
     }
@@ -180,6 +195,14 @@ defmodule KimperWeb.HomeLive do
     kimp = get_in(storage, [:eth, :kimp])
     bybit_usd_funding_rate = get_in(storage, [:btc, :bybit, :usd_funding_rate])
 
+    previous_close = get_in(storage, [:eth, :upbit, :previous_close])
+    change_amount = if (is_number(upbit_krw_price) and is_number(previous_close)) do
+      Float.round(upbit_krw_price - previous_close, 0)
+    end
+    change_rate = if (is_number(upbit_krw_price) and is_number(previous_close)) do
+      Float.round((upbit_krw_price - previous_close) / previous_close * 100, 2)
+    end
+
     %{
       ticker_english: "ETH",
       ticker_korean: "이더리움",
@@ -188,6 +211,8 @@ defmodule KimperWeb.HomeLive do
       kimp: kimp,
       telegram_link: "https://t.me/+Pgjk1X2adfQ0MGFl",
       bybit_usd_funding_rate: bybit_usd_funding_rate,
+      change_amount: change_amount,
+      change_rate: change_rate,
     }
   end
   defp to_coin(_), do: nil
@@ -248,7 +273,7 @@ defmodule KimperWeb.HomeLive do
                 <%= @indicator_name %>
             </div>
             <div class="text-body-bold1">
-              <%= if @indicator_name == "비트코인" do %>
+              <%= if @indicator_name == "비트코인" or @indicator_name == "이더리움" do %>
                 <%= if is_number(@recent_value), do: to_str_price(@recent_value) %>
               <% else %>
                 <%= if is_number(@recent_value), do: Number.Delimit.number_to_delimited(@recent_value) %>

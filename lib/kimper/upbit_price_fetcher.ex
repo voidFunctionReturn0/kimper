@@ -27,18 +27,20 @@ defmodule Kimper.UpbitPriceFetcher do
     code = message_json["code"]
     price = message_json["trade_price"]
 
-    btc_previous_close = if code == @btc do
+    previous_close = if code == @btc or code == @eth do
       message_json["prev_closing_price"]
     end
 
     case code do
       @btc ->
-          Storage.set_upbit_krw_price(price, :btc)
-          Storage.set_upbit_krw_previous_close(btc_previous_close, :btc)
+        Storage.set_upbit_krw_price(price, :btc)
+        Storage.set_upbit_krw_previous_close(previous_close, :btc)
       @sol -> Storage.set_upbit_krw_price(price, :sol)
       @xrp -> Storage.set_upbit_krw_price(price, :xrp)
       @eos -> Storage.set_upbit_krw_price(price, :eos)
-      @eth -> Storage.set_upbit_krw_price(price, :eth)
+      @eth ->
+        Storage.set_upbit_krw_price(price, :eth)
+        Storage.set_upbit_krw_previous_close(previous_close, :eth)
       _    -> nil
     end
 

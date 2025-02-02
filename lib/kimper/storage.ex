@@ -8,12 +8,13 @@ defmodule Kimper.Storage do
     sol: %{upbit: %{krw: nil}, bybit: %{usdt: nil, usdt_to_krw: nil, usd_funding_rate: nil}, kimp: nil},
     xrp: %{upbit: %{krw: nil}, bybit: %{usdt: nil, usdt_to_krw: nil, usd_funding_rate: nil}, kimp: nil},
     eos: %{upbit: %{krw: nil}, bybit: %{usdt: nil, usdt_to_krw: nil, usd_funding_rate: nil}, kimp: nil},
-    eth: %{upbit: %{krw: nil}, bybit: %{usdt: nil, usdt_to_krw: nil, usd_funding_rate: nil}, kimp: nil},
+    eth: %{upbit: %{krw: nil, previous_close: nil}, bybit: %{usdt: nil, usdt_to_krw: nil, usd_funding_rate: nil}, kimp: nil},
     exchange_rate: nil,
     kospi: %Indicator{},
     kosdaq: %Indicator{},
     nasdaq: %Indicator{},
     snp500: %Indicator{},
+    dowjones: %Indicator{}
   }
 
   def start_link(_), do: GenServer.start_link(__MODULE__, @initial_state, name: __MODULE__)
@@ -24,6 +25,7 @@ defmodule Kimper.Storage do
   def set_upbit_krw_price(price, :eos), do: GenServer.cast(__MODULE__, {:upbit_krw_price, price, :eos})
   def set_upbit_krw_price(price, :eth), do: GenServer.cast(__MODULE__, {:upbit_krw_price, price, :eth})
   def set_upbit_krw_previous_close(previous_close, :btc), do: GenServer.cast(__MODULE__, {:upbit_krw_previous_close, previous_close, :btc})
+  def set_upbit_krw_previous_close(previous_close, :eth), do: GenServer.cast(__MODULE__, {:upbit_krw_previous_close, previous_close, :eth})
 
   def set_bybit_usdt_price(price, :btc), do: GenServer.cast(__MODULE__, {:bybit_usdt_price, price, :btc})
   def set_bybit_usdt_price(price, :sol), do: GenServer.cast(__MODULE__, {:bybit_usdt_price, price, :sol})
@@ -42,6 +44,7 @@ defmodule Kimper.Storage do
   def set_kosdaq(kosdaq), do: GenServer.cast(__MODULE__, {:kosdaq, kosdaq})
   def set_nasdaq(nasdaq), do: GenServer.cast(__MODULE__, {:nasdaq, nasdaq})
   def set_snp500(snp500), do: GenServer.cast(__MODULE__, {:snp500, snp500})
+  def set_dowjones(dowjones), do: GenServer.cast(__MODULE__, {:dowjones, dowjones})
 
   def state, do: GenServer.call(__MODULE__, :state)
 
@@ -53,6 +56,7 @@ defmodule Kimper.Storage do
   def handle_cast({:upbit_krw_price, price, :eos}, state), do: {:noreply, put_in(state, [:eos, :upbit, :krw], price)}
   def handle_cast({:upbit_krw_price, price, :eth}, state), do: {:noreply, put_in(state, [:eth, :upbit, :krw], price)}
   def handle_cast({:upbit_krw_previous_close, previous_close, :btc}, state), do: {:noreply, put_in(state, [:btc, :upbit, :previous_close], previous_close)}
+  def handle_cast({:upbit_krw_previous_close, previous_close, :eth}, state), do: {:noreply, put_in(state, [:eth, :upbit, :previous_close], previous_close)}
 
   def handle_cast({:bybit_usdt_price, price, :btc}, state), do: {:noreply, put_in(state, [:btc, :bybit, :usdt], price)}
   def handle_cast({:bybit_usdt_price, price, :sol}, state), do: {:noreply, put_in(state, [:sol, :bybit, :usdt], price)}
@@ -71,6 +75,7 @@ defmodule Kimper.Storage do
   def handle_cast({:kosdaq, kosdaq}, state), do: {:noreply, Map.put(state, :kosdaq, kosdaq)}
   def handle_cast({:nasdaq, nasdaq}, state), do: {:noreply, Map.put(state, :nasdaq, nasdaq)}
   def handle_cast({:snp500, snp500}, state), do: {:noreply, Map.put(state, :snp500, snp500)}
+  def handle_cast({:dowjones, dowjones}, state), do: {:noreply, Map.put(state, :dowjones, dowjones)}
 
   def handle_call(:state, _from, state) do
     new_state = state
