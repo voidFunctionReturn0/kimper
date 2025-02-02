@@ -7,7 +7,7 @@
                     오늘의 경제 지표
                 </span>
             </div>
-            <div class="w-full flex overflow-auto whitespace-nowrap gap-2.5 mx-4 no-scroll">
+            <div class="w-auto flex overflow-auto whitespace-nowrap gap-2.5 mx-4 no-scroll">
                 <%= render_indicator(assigns, "코스피", @kospi.recent_value, @kospi.change_amount, @kospi.change_rate) %>
                 <%= render_indicator(assigns, "코스닥", @kosdaq.recent_value, @kosdaq.change_amount, @kosdaq.change_rate) %>
                 <%= render_indicator(assigns, "나스닥 종합", @nasdaq.recent_value, @nasdaq.change_amount, @nasdaq.change_rate) %>
@@ -56,7 +56,7 @@
                     <%= @update_in %>
                 </span>
             </div>
-            <div class="w-full flex overflow-auto whitespace-nowrap gap-2.5 mx-4 no-scroll">
+            <div class="w-auto flex overflow-auto whitespace-nowrap gap-2.5 mx-4 no-scroll">
                 <%= for coin <- @coins do %>
                     <div class="w-32 flex flex-col gap-7 p-2.5 border rounded-lg bg-my_gray-6 border-my_gray-7">
                         <div class="w-full flex flex-col gap-1">
