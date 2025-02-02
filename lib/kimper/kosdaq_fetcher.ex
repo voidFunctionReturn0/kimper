@@ -3,7 +3,7 @@ defmodule Kimper.KosdaqFetcher do
   alias Kimper.Storage
   alias Kimper.Indicator
 
-  @interval 1_000 # TODO: 60초로 수정
+  @interval 60_000
   @initial_state %{kosdaq: nil}
   @url "https://query1.finance.yahoo.com/v8/finance/chart/^KQ11"
 
@@ -12,6 +12,7 @@ defmodule Kimper.KosdaqFetcher do
   end
 
   def init(state) do
+    Process.send_after(self(), :fetch_kosdaq, 0)
     schedule_fetch_kosdaq()
     {:ok, state}
   end

@@ -17,6 +17,7 @@ defmodule KimperWeb.HomeLive do
     |> assign(coins: [])
     |> assign(kospi: %{recent_value: nil, change_amount: nil, change_rate: nil})
     |> assign(kosdaq: %{recent_value: nil, change_amount: nil, change_rate: nil})
+    |> assign(nasdaq: %{recent_value: nil, change_amount: nil, change_rate: nil})
     |> assign(update_in: @default_string)
 
     {:ok, socket, layout: false}
@@ -45,6 +46,15 @@ defmodule KimperWeb.HomeLive do
       Float.round((kosdaq.recent_value - kosdaq.previous_close) / kosdaq.previous_close * 100, 2)
     end
 
+    nasdaq = Storage.state.nasdaq
+    nasdaq_recent_value = if is_number(nasdaq.recent_value), do: Float.round(nasdaq.recent_value, 2)
+    nasdaq_change_amount = if (is_number(nasdaq.recent_value) and is_number(nasdaq.previous_close)) do
+      Float.round(nasdaq.recent_value - nasdaq.previous_close, 2)
+    end
+    nasdaq_change_rate = if (is_number(nasdaq.recent_value) and is_number(nasdaq.previous_close)) do
+      Float.round((nasdaq.recent_value - nasdaq.previous_close) / nasdaq.previous_close * 100, 2)
+    end
+
     schedule_update()
 
     {
@@ -60,6 +70,11 @@ defmodule KimperWeb.HomeLive do
         recent_value: kosdaq_recent_value,
         change_amount: kosdaq_change_amount,
         change_rate: kosdaq_change_rate,
+      })
+      |> assign(nasdaq: %{
+        recent_value: nasdaq_recent_value,
+        change_amount: nasdaq_change_amount,
+        change_rate: nasdaq_change_rate,
       })
       |> assign(update_in: update_in(Timex.now()))
     }
@@ -233,7 +248,7 @@ defmodule KimperWeb.HomeLive do
                 <%= @indicator_name %>
             </div>
             <div class="text-body-bold1">
-                <%= @recent_value %>
+                <%= if is_number(@recent_value), do: Number.Delimit.number_to_delimited(@recent_value) %>
             </div>
         </div>
         <div class="text-body1 flex gap-2">
@@ -251,7 +266,7 @@ defmodule KimperWeb.HomeLive do
                         <% @change_amount < 0 -> %>
                             ▼
                     <% end %>
-                    <%= @change_amount %>
+                    <%= if is_float(@change_amount), do: @change_amount |> abs() %>
                 </span>
             </div>
             <div>
@@ -265,7 +280,7 @@ defmodule KimperWeb.HomeLive do
                     <% @change_rate > 0 -> %>
                         +<%= @change_rate %>%
                     <% @change_rate < 0 -> %>
-                        -<%= @change_rate %>%
+                        <%= @change_rate %>%
                   <% end %>
                 </span>
             </div>

@@ -17,6 +17,7 @@ defmodule Kimper.Application do
       Kimper.ExchangeRateFetcher,
       Kimper.KospiFetcher,
       Kimper.KosdaqFetcher,
+      Kimper.NasdaqFetcher,
       KimperWeb.Telemetry,
       {DNSCluster, query: Application.get_env(:kimper, :dns_cluster_query) || :ignore},
       {Phoenix.PubSub, name: Kimper.PubSub},
