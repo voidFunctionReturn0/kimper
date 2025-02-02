@@ -102,10 +102,13 @@ defmodule KimperWeb.HomeLive do
     kimp = get_in(storage, [:btc, :kimp])
     bybit_usd_funding_rate = get_in(storage, [:btc, :bybit, :usd_funding_rate])
 
-    upbit_krw_price = to_str_price(upbit_krw_price)
-    bybit_krw_price = to_str_price(bybit_krw_price)
-    kimp = to_str_kimp(kimp)
-    bybit_usd_funding_rate = to_str_funding_rate(bybit_usd_funding_rate)
+    previous_close = get_in(storage, [:btc, :upbit, :previous_close])
+    change_amount = if (is_number(upbit_krw_price) and is_number(previous_close)) do
+      Float.round(upbit_krw_price - previous_close, 0)
+    end
+    change_rate = if (is_number(upbit_krw_price) and is_number(previous_close)) do
+      Float.round((upbit_krw_price - previous_close) / previous_close * 100, 2)
+    end
 
     %{
       ticker_english: "BTC",
@@ -115,6 +118,8 @@ defmodule KimperWeb.HomeLive do
       kimp: kimp,
       telegram_link: "https://t.me/+jUKF4BTqgQNhOGY1",
       bybit_usd_funding_rate: bybit_usd_funding_rate,
+      change_amount: change_amount,
+      change_rate: change_rate,
     }
   end
   defp to_coin(:sol) do
@@ -123,11 +128,6 @@ defmodule KimperWeb.HomeLive do
     bybit_krw_price = get_in(storage, [:sol, :bybit, :usdt_to_krw])
     kimp = get_in(storage, [:sol, :kimp])
     bybit_usd_funding_rate = get_in(storage, [:btc, :bybit, :usd_funding_rate])
-
-    upbit_krw_price = to_str_price(upbit_krw_price)
-    bybit_krw_price = to_str_price(bybit_krw_price)
-    kimp = to_str_kimp(kimp)
-    bybit_usd_funding_rate = to_str_funding_rate(bybit_usd_funding_rate)
 
     %{
       ticker_english: "SOL",
@@ -146,11 +146,6 @@ defmodule KimperWeb.HomeLive do
     kimp = get_in(storage, [:xrp, :kimp])
     bybit_usd_funding_rate = get_in(storage, [:btc, :bybit, :usd_funding_rate])
 
-    upbit_krw_price = to_str_price(upbit_krw_price)
-    bybit_krw_price = to_str_price(bybit_krw_price)
-    kimp = to_str_kimp(kimp)
-    bybit_usd_funding_rate = to_str_funding_rate(bybit_usd_funding_rate)
-
     %{
       ticker_english: "XRP",
       ticker_korean: "리플",
@@ -168,11 +163,6 @@ defmodule KimperWeb.HomeLive do
     kimp = get_in(storage, [:eos, :kimp])
     bybit_usd_funding_rate = get_in(storage, [:btc, :bybit, :usd_funding_rate])
 
-    upbit_krw_price = to_str_price(upbit_krw_price)
-    bybit_krw_price = to_str_price(bybit_krw_price)
-    kimp = to_str_kimp(kimp)
-    bybit_usd_funding_rate = to_str_funding_rate(bybit_usd_funding_rate)
-
     %{
       ticker_english: "EOS",
       ticker_korean: "이오스",
@@ -189,11 +179,6 @@ defmodule KimperWeb.HomeLive do
     bybit_krw_price = get_in(storage, [:eth, :bybit, :usdt_to_krw])
     kimp = get_in(storage, [:eth, :kimp])
     bybit_usd_funding_rate = get_in(storage, [:btc, :bybit, :usd_funding_rate])
-
-    upbit_krw_price = to_str_price(upbit_krw_price)
-    bybit_krw_price = to_str_price(bybit_krw_price)
-    kimp = to_str_kimp(kimp)
-    bybit_usd_funding_rate = to_str_funding_rate(bybit_usd_funding_rate)
 
     %{
       ticker_english: "ETH",
@@ -263,7 +248,11 @@ defmodule KimperWeb.HomeLive do
                 <%= @indicator_name %>
             </div>
             <div class="text-body-bold1">
+              <%= if @indicator_name == "비트코인" do %>
+                <%= if is_number(@recent_value), do: to_str_price(@recent_value) %>
+              <% else %>
                 <%= if is_number(@recent_value), do: Number.Delimit.number_to_delimited(@recent_value) %>
+              <% end %>
             </div>
         </div>
         <div class="text-body1 flex gap-2">
@@ -281,7 +270,7 @@ defmodule KimperWeb.HomeLive do
                         <% @change_amount < 0 -> %>
                             ▼
                     <% end %>
-                    <%= if is_float(@change_amount), do: @change_amount |> abs() %>
+                    <%= if is_float(@change_amount), do: @change_amount |> abs() |> Number.Delimit.number_to_delimited() %>
                 </span>
             </div>
             <div>

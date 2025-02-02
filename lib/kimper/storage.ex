@@ -4,7 +4,7 @@ defmodule Kimper.Storage do
 
   @initial_state %{
     coins: [:btc, :sol, :xrp, :eos, :eth],
-    btc: %{upbit: %{krw: nil}, bybit: %{usdt: nil, usdt_to_krw: nil, usd_funding_rate: nil}, kimp: nil},
+    btc: %{upbit: %{krw: nil, previous_close: nil}, bybit: %{usdt: nil, usdt_to_krw: nil, usd_funding_rate: nil}, kimp: nil},
     sol: %{upbit: %{krw: nil}, bybit: %{usdt: nil, usdt_to_krw: nil, usd_funding_rate: nil}, kimp: nil},
     xrp: %{upbit: %{krw: nil}, bybit: %{usdt: nil, usdt_to_krw: nil, usd_funding_rate: nil}, kimp: nil},
     eos: %{upbit: %{krw: nil}, bybit: %{usdt: nil, usdt_to_krw: nil, usd_funding_rate: nil}, kimp: nil},
@@ -23,6 +23,7 @@ defmodule Kimper.Storage do
   def set_upbit_krw_price(price, :xrp), do: GenServer.cast(__MODULE__, {:upbit_krw_price, price, :xrp})
   def set_upbit_krw_price(price, :eos), do: GenServer.cast(__MODULE__, {:upbit_krw_price, price, :eos})
   def set_upbit_krw_price(price, :eth), do: GenServer.cast(__MODULE__, {:upbit_krw_price, price, :eth})
+  def set_upbit_krw_previous_close(previous_close, :btc), do: GenServer.cast(__MODULE__, {:upbit_krw_previous_close, previous_close, :btc})
 
   def set_bybit_usdt_price(price, :btc), do: GenServer.cast(__MODULE__, {:bybit_usdt_price, price, :btc})
   def set_bybit_usdt_price(price, :sol), do: GenServer.cast(__MODULE__, {:bybit_usdt_price, price, :sol})
@@ -51,6 +52,7 @@ defmodule Kimper.Storage do
   def handle_cast({:upbit_krw_price, price, :xrp}, state), do: {:noreply, put_in(state, [:xrp, :upbit, :krw], price)}
   def handle_cast({:upbit_krw_price, price, :eos}, state), do: {:noreply, put_in(state, [:eos, :upbit, :krw], price)}
   def handle_cast({:upbit_krw_price, price, :eth}, state), do: {:noreply, put_in(state, [:eth, :upbit, :krw], price)}
+  def handle_cast({:upbit_krw_previous_close, previous_close, :btc}, state), do: {:noreply, put_in(state, [:btc, :upbit, :previous_close], previous_close)}
 
   def handle_cast({:bybit_usdt_price, price, :btc}, state), do: {:noreply, put_in(state, [:btc, :bybit, :usdt], price)}
   def handle_cast({:bybit_usdt_price, price, :sol}, state), do: {:noreply, put_in(state, [:sol, :bybit, :usdt], price)}

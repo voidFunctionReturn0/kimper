@@ -12,6 +12,9 @@
                 <%= render_indicator(assigns, "코스닥", @kosdaq.recent_value, @kosdaq.change_amount, @kosdaq.change_rate) %>
                 <%= render_indicator(assigns, "나스닥 종합", @nasdaq.recent_value, @nasdaq.change_amount, @nasdaq.change_rate) %>
                 <%= render_indicator(assigns, "S&P 500", @snp500.recent_value, @snp500.change_amount, @snp500.change_rate) %>
+
+                <% btc = @coins |> Enum.filter(fn coin -> coin.ticker_korean == "비트코인" end) |> List.first() %>
+                <%= render_indicator(assigns, "비트코인", get_in(btc, [:upbit_krw_price]), get_in(btc, [:change_amount]), get_in(btc, [:change_rate])) %>
             </div>
         </section>
         <section class="section1">
@@ -36,9 +39,9 @@
                                 <span><%= coin.ticker_english %></span>
                                 <span class="text-my_gray-4 text-xs"> · <%= coin.ticker_korean %></span></td>
                             <%!-- TODO: 김프 양수면 파랗게? --%>
-                            <td class="text-my_red-1 flex-auto px-4 py-2 min-w-24"><%= coin.kimp %></td> 
-                            <td class="flex-auto px-4 py-2 min-w-40 hidden md:table-cell"><%= coin.upbit_krw_price %></td>
-                            <td class="flex-auto px-4 py-2 min-w-40 hidden md:table-cell"><%= coin.bybit_krw_price %></td>
+                            <td class="text-my_red-1 flex-auto px-4 py-2 min-w-24"><%= to_str_kimp(coin.kimp) %></td> 
+                            <td class="flex-auto px-4 py-2 min-w-40 hidden md:table-cell"><%= to_str_price(coin.upbit_krw_price) %></td>
+                            <td class="flex-auto px-4 py-2 min-w-40 hidden md:table-cell"><%= to_str_price(coin.bybit_krw_price) %></td>
                             <td class="flex-auto px-4 py-2 min-w-24 hidden md:table-cell"><button class="btn-red">차트보기</button></td>
                             <td class="flex-auto px-4 py-2 min-w-24"><button class="btn-blue" type="button" onclick={"window.open('#{coin.telegram_link}')"}>알림받기</button></td>
                         </tr>
@@ -61,7 +64,7 @@
                     <div class="w-32 flex flex-col gap-7 p-2.5 border rounded-lg bg-my_gray-6 border-my_gray-7">
                         <div class="w-full flex flex-col gap-1">
                             <span class="font-bold text-base"><%= coin.ticker_english %>USD</span>
-                            <span class="font-bold text-xl text-my_red-1"><%= coin.bybit_usd_funding_rate %></span> <!-- TODO: 음수면 파랗게 -->
+                            <span class="font-bold text-xl text-my_red-1"><%= to_str_funding_rate(coin.bybit_usd_funding_rate) %></span> <!-- TODO: 음수면 파랗게 -->
                         </div>
                         <div class="w-full flex flex-col items-end gap-1">
                             <button class="btn-blue" type="button" onclick={"window.open('#{coin.telegram_link}')"}>알림받기</button>
