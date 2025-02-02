@@ -1,32 +1,32 @@
-defmodule Kimper.NasdaqFetcher do
+defmodule Kimper.Snp500Fetcher do
   use GenServer
   alias Kimper.Storage
   alias Kimper.Indicator
 
   @interval 60_000
-  @initial_state %{nasdaq: nil}
-  @url "https://query1.finance.yahoo.com/v8/finance/chart/^IXIC"
+  @initial_state %{snp500: nil}
+  @url "https://query1.finance.yahoo.com/v8/finance/chart/^GSPC"
 
   def start_link(_) do
     GenServer.start_link(__MODULE__, @initial_state, name: __MODULE__)
   end
 
   def init(state) do
-    Process.send_after(self(), :fetch_nasdaq, 0)
-    schedule_fetch_nasdaq()
+    Process.send_after(self(), :fetch_snp500, 0)
+    schedule_fetch_snp500()
     {:ok, state}
   end
 
-  def schedule_fetch_nasdaq, do: Process.send_after(self(), :fetch_nasdaq, @interval)
+  def schedule_fetch_snp500, do: Process.send_after(self(), :fetch_snp500, @interval)
 
-  def handle_info(:fetch_nasdaq, state) do
-    new_nasdaq = fetch_nasdaq()
-    Storage.set_nasdaq(new_nasdaq)
-    schedule_fetch_nasdaq()
-    {:noreply, %{state | nasdaq: new_nasdaq}}
+  def handle_info(:fetch_snp500, state) do
+    new_snp500 = fetch_snp500()
+    Storage.set_snp500(new_snp500)
+    schedule_fetch_snp500()
+    {:noreply, %{state | snp500: new_snp500}}
   end
 
-  def fetch_nasdaq() do
+  def fetch_snp500() do
     response = HTTPoison.get!(@url).body |> Jason.decode!()
     %{"chart" => %{"result" => [%{"meta" => %{"regularMarketPrice" => recent_value, "previousClose" => previous_close}}]}} = response
     %Indicator{recent_value: recent_value, previous_close: previous_close}

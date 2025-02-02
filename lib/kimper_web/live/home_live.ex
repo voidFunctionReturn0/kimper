@@ -18,6 +18,7 @@ defmodule KimperWeb.HomeLive do
     |> assign(kospi: %{recent_value: nil, change_amount: nil, change_rate: nil})
     |> assign(kosdaq: %{recent_value: nil, change_amount: nil, change_rate: nil})
     |> assign(nasdaq: %{recent_value: nil, change_amount: nil, change_rate: nil})
+    |> assign(snp500: %{recent_value: nil, change_amount: nil, change_rate: nil})
     |> assign(update_in: @default_string)
 
     {:ok, socket, layout: false}
@@ -55,6 +56,15 @@ defmodule KimperWeb.HomeLive do
       Float.round((nasdaq.recent_value - nasdaq.previous_close) / nasdaq.previous_close * 100, 2)
     end
 
+    snp500 = Storage.state.snp500
+    snp500_recent_value = if is_number(snp500.recent_value), do: Float.round(snp500.recent_value, 2)
+    snp500_change_amount = if (is_number(snp500.recent_value) and is_number(snp500.previous_close)) do
+      Float.round(snp500.recent_value - snp500.previous_close, 2)
+    end
+    snp500_change_rate = if (is_number(snp500.recent_value) and is_number(snp500.previous_close)) do
+      Float.round((snp500.recent_value - snp500.previous_close) / snp500.previous_close * 100, 2)
+    end
+
     schedule_update()
 
     {
@@ -75,6 +85,11 @@ defmodule KimperWeb.HomeLive do
         recent_value: nasdaq_recent_value,
         change_amount: nasdaq_change_amount,
         change_rate: nasdaq_change_rate,
+      })
+      |> assign(snp500: %{
+        recent_value: snp500_recent_value,
+        change_amount: snp500_change_amount,
+        change_rate: snp500_change_rate,
       })
       |> assign(update_in: update_in(Timex.now()))
     }

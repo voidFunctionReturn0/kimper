@@ -12,7 +12,8 @@ defmodule Kimper.Storage do
     exchange_rate: nil,
     kospi: %Indicator{},
     kosdaq: %Indicator{},
-    nasdaq: %Indicator{}
+    nasdaq: %Indicator{},
+    snp500: %Indicator{},
   }
 
   def start_link(_), do: GenServer.start_link(__MODULE__, @initial_state, name: __MODULE__)
@@ -39,6 +40,7 @@ defmodule Kimper.Storage do
   def set_kospi(kospi), do: GenServer.cast(__MODULE__, {:kospi, kospi})
   def set_kosdaq(kosdaq), do: GenServer.cast(__MODULE__, {:kosdaq, kosdaq})
   def set_nasdaq(nasdaq), do: GenServer.cast(__MODULE__, {:nasdaq, nasdaq})
+  def set_snp500(snp500), do: GenServer.cast(__MODULE__, {:snp500, snp500})
 
   def state, do: GenServer.call(__MODULE__, :state)
 
@@ -66,6 +68,7 @@ defmodule Kimper.Storage do
   def handle_cast({:kospi, kospi}, state), do: {:noreply, Map.put(state, :kospi, kospi)}
   def handle_cast({:kosdaq, kosdaq}, state), do: {:noreply, Map.put(state, :kosdaq, kosdaq)}
   def handle_cast({:nasdaq, nasdaq}, state), do: {:noreply, Map.put(state, :nasdaq, nasdaq)}
+  def handle_cast({:snp500, snp500}, state), do: {:noreply, Map.put(state, :snp500, snp500)}
 
   def handle_call(:state, _from, state) do
     new_state = state
