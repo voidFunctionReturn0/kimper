@@ -13,13 +13,11 @@ defmodule KimperWeb.HomeLive do
       Process.send_after(self(), :update, 0)
     end
 
-    # TODO: exchange_rate는 임시로 추가함. 나중에 제거해야 함. 환율이 매일 업데이트되는지 확인해보고. 1/19 기준 1456.10781342임
     socket = socket
     |> assign(coins: [])
     |> assign(kospi: %{recent_value: nil, change_amount: nil, change_rate: nil})
     |> assign(kosdaq: %{recent_value: nil, change_amount: nil, change_rate: nil})
     |> assign(update_in: @default_string)
-    |> assign(exchange_rate: @default_string)
 
     {:ok, socket, layout: false}
   end
@@ -49,7 +47,6 @@ defmodule KimperWeb.HomeLive do
 
     schedule_update()
 
-    # TODO: exchange_rate는 임시로 추가함. 나중에 제거해야 함. 환율이 매일 업데이트되는지 확인해보고. 1/19 기준 1456.10781342임
     {
       :noreply,
       socket
@@ -65,7 +62,6 @@ defmodule KimperWeb.HomeLive do
         change_rate: kosdaq_change_rate,
       })
       |> assign(update_in: update_in(Timex.now()))
-      |> assign(exchange_rate: Storage.state.exchange_rate)
     }
   end
 
