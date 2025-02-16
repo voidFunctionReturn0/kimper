@@ -1,5 +1,3 @@
-# TODO: 모바일 뷰에서 정렬 꺠짐
-
 defmodule KimperWeb.HomeLive do
   use KimperWeb, :live_view
   alias Kimper.Storage
@@ -21,9 +19,14 @@ defmodule KimperWeb.HomeLive do
     |> assign(snp500: %{recent_value: nil, change_amount: nil, change_rate: nil})
     |> assign(dowjones: %{recent_value: nil, change_amount: nil, change_rate: nil})
     |> assign(update_in: @default_string)
+    |> assign(show_modal: false) # 임시 모달을 위한 것
 
     {:ok, socket, layout: false}
   end
+
+  # 임시 모달을 위한 것
+  def handle_event("show_modal", _params, socket), do: {:noreply, assign(socket, show_modal: true)}
+  def handle_event("hide_modal", _params, socket), do: {:noreply, assign(socket, show_modal: false)}
 
   def handle_info(:update, socket) do
     coins = Storage.state.coins

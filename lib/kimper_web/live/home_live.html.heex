@@ -1,3 +1,13 @@
+<%!-- 임시 모달 --%>
+<%= if @show_modal do %>
+    <div id="modal" class="fixed inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center">
+        <div class="bg-white p-6 rounded-lg flex flex-col gap-4">
+            <p>준비 중입니다.</p>
+            <button phx-click="hide_modal" class="self-end mt-auto p-2 bg-blue-500 text-white">닫기</button>
+        </div>
+    </div>
+<% end %>
+
 <div class="w-full h-full flex flex-col items-center text-my_black-2">
     <nav class="w-full h-16 bg-my_black-1" />
     <main class="w-full max-w-3xl flex flex-col gap-12 py-16">
@@ -46,7 +56,7 @@
                             <td class="flex-1 px-4 py-2 min-w-24 text-my_red-1"><%= to_str_kimp(coin.kimp) %></td> 
                             <td class="flex-1 px-4 py-2 min-w-40 hidden md:table-cell"><%= to_str_price(coin.upbit_krw_price) %></td>
                             <td class="flex-1 px-4 py-2 min-w-40 hidden md:table-cell"><%= to_str_price(coin.bybit_krw_price) %></td>
-                            <td class="flex-1 px-4 py-2 min-w-24 hidden md:table-cell"><button class="btn-red">차트보기</button></td>
+                            <td class="flex-1 px-4 py-2 min-w-24 hidden md:table-cell"><button class="btn-red" phx-click="show_modal">차트보기</button></td>
                             <td class="flex-1 px-4 py-2 min-w-24"><button class="btn-blue" type="button" onclick={"window.open('#{coin.telegram_link}')"}>알림받기</button></td>
                         </tr>
                     <% end %>
@@ -83,6 +93,7 @@
             </a>
         </section>
     </main>
+
     <footer class="w-full flex flex-col items-center border-my_gray-1 border-t">
         <div class="w-full max-w-3xl flex flex-col gap-4 p-4 py-24">
             <div class="w-full flex flex-col gap-2">
@@ -93,6 +104,7 @@
         </div>
     </footer>
 </div>
+
 <style>
     .no-scroll::-webkit-scrollbar {
         display: none; /* Chrome, Safari, Edge */
