@@ -31,8 +31,8 @@ defmodule Kimper.Notifier do
         english_usd = english_usd(coin_usd)
         message = """
         <Bybit>
-        - #{english_usd} 펀딩비: #{String.to_float(funding_rate) * 100}%
-        - #{english_usdt(english_usd)} 김프: #{kimp(coin_usd) |> Float.floor(2)}%
+        - #{english_usd} 펀딩비: #{Float.round(String.to_float(funding_rate) * 100, 3)}%
+        - #{english_usdt(english_usd)} 김프: #{kimp(coin_usd) |> Float.round(2)}%
         """
         body = Jason.encode!(%{
           chat_id: Map.get(@telegram_chat_id, coin_usd),
