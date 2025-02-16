@@ -29,25 +29,25 @@
             </div>
             <table class="table-fixed w-full flex flex-col text-left overflow-auto">
                 <tr class="text-base font-bold w-full flex">
-                    <th class="flex-auto px-4 py-2 min-w-40">코인</th>
-                    <th class="text-my_red-1 flex-auto px-4 py-2 min-w-24">김프</th>
-                    <th class="flex-auto px-4 py-2 min-w-40 hidden md:table-cell">업비트</th>
-                    <th class="flex-auto px-4 py-2 min-w-40 hidden md:table-cell">바이비트</th>
-                    <th class="flex-auto px-4 py-2 min-w-24 hidden md:table-cell">김프차트</th>
-                    <th class="flex-auto px-4 py-2 min-w-24 ">텔레그램</th>
+                    <th class="flex-1 px-4 py-2 min-w-40">코인</th>
+                    <th class="flex-1 px-4 py-2 min-w-24 text-my_red-1">김프</th>
+                    <th class="flex-1 px-4 py-2 min-w-40 hidden md:table-cell">업비트</th>
+                    <th class="flex-1 px-4 py-2 min-w-40 hidden md:table-cell">바이비트</th>
+                    <th class="flex-1 px-4 py-2 min-w-24 hidden md:table-cell">김프차트</th>
+                    <th class="flex-1 px-4 py-2 min-w-24 ">텔레그램</th>
                 </tr>
                 <tbody>
                     <%= for coin <- @coins do %>
                         <tr class="text-base w-full flex">
-                            <td class="flex-auto px-4 py-2 min-w-40">
+                            <td class="flex-1 px-4 py-2 min-w-40">
                                 <span><%= coin.ticker_english %></span>
                                 <span class="text-my_gray-4 text-xs"> · <%= coin.ticker_korean %></span></td>
                             <%!-- TODO: 김프 양수면 파랗게? --%>
-                            <td class="text-my_red-1 flex-auto px-4 py-2 min-w-24"><%= to_str_kimp(coin.kimp) %></td> 
-                            <td class="flex-auto px-4 py-2 min-w-40 hidden md:table-cell"><%= to_str_price(coin.upbit_krw_price) %></td>
-                            <td class="flex-auto px-4 py-2 min-w-40 hidden md:table-cell"><%= to_str_price(coin.bybit_krw_price) %></td>
-                            <td class="flex-auto px-4 py-2 min-w-24 hidden md:table-cell"><button class="btn-red">차트보기</button></td>
-                            <td class="flex-auto px-4 py-2 min-w-24"><button class="btn-blue" type="button" onclick={"window.open('#{coin.telegram_link}')"}>알림받기</button></td>
+                            <td class="flex-1 px-4 py-2 min-w-24 text-my_red-1"><%= to_str_kimp(coin.kimp) %></td> 
+                            <td class="flex-1 px-4 py-2 min-w-40 hidden md:table-cell"><%= to_str_price(coin.upbit_krw_price) %></td>
+                            <td class="flex-1 px-4 py-2 min-w-40 hidden md:table-cell"><%= to_str_price(coin.bybit_krw_price) %></td>
+                            <td class="flex-1 px-4 py-2 min-w-24 hidden md:table-cell"><button class="btn-red">차트보기</button></td>
+                            <td class="flex-1 px-4 py-2 min-w-24"><button class="btn-blue" type="button" onclick={"window.open('#{coin.telegram_link}')"}>알림받기</button></td>
                         </tr>
                     <% end %>
                 </tbody>
@@ -76,6 +76,11 @@
                     </div>
                 <% end %>
             </div>
+        </section>
+        <section class="section1 p-2.5">
+            <a href="https://www.bybit.com/" target="_blank">
+                <img src={~p"/images/bybit_payback_ad_banner.png"} alt="바이비트 페이백 이벤트" class="w-full h-auto rounded-2xl" />
+            </a>
         </section>
     </main>
     <footer class="w-full flex flex-col items-center border-my_gray-1 border-t">
