@@ -283,17 +283,17 @@ defmodule KimperWeb.HomeLive do
         <div class="text-body1 flex gap-2">
             <div>
                 <span class={
-                    cond do
-                        @change_amount > 0 -> "text-my_red-3"
-                        @change_amount < 0 -> "text-my_blue-2"
+                    if is_number(@change_amount) and @change_amount < 0 do
+                      "text-my_blue-2"
+                    else
+                      "text-my_red-3"
                     end
                 }>
                     <%!-- TODO: 화살표를 디자인 파일에 있는 것처럼 수정 필요 --%>
-                    <%= cond do %>
-                        <% @change_amount > 0 -> %>
-                            ▲
-                        <% @change_amount < 0 -> %>
-                            ▼
+                    <%= if is_number(@change_amount) and @change_amount < 0 do %>
+                      ▼
+                    <% else %>
+                      ▲
                     <% end %>
                     <%= if is_float(@change_amount), do: @change_amount |> abs() |> Number.Delimit.number_to_delimited() %>
                 </span>
