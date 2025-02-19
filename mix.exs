@@ -60,6 +60,7 @@ defmodule Kimper.MixProject do
       {:quantum, "~> 3.5"},
       {:dotenv, "~> 3.1"},
       {:timex, "~> 3.7"},
+      {:sitemapper, "~> 0.9.0"},
     ]
   end
 
