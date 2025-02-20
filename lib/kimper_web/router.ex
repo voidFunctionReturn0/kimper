@@ -19,6 +19,7 @@ defmodule KimperWeb.Router do
 
     # get "/", PageController, :home
     live "/", HomeLive
+    get "/sitemap.xml", SitemapController, :index # 참고: https://andrewian.dev/blog/sitemap-in-phoenix-with-verified-routes
   end
 
   # Other scopes may use custom stacks.

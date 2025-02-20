@@ -1,23 +1,12 @@
 defmodule KimperWeb.SitemapController do
+  use KimperWeb, :controller
 
-  def generate_sitemap() do
-    config = [
-      store_config: [
-        path: "priv/static/",
-      ],
-      sitemap_url: "https://kimper.gigalixirapp.com/"
-    ]
+  def index(conn, _params) do
+    xml = KimperWeb.SitemapHtml.index(%{})
 
-    Stream.concat([1..100_001])
-    |> Stream.map(fn _ ->
-      %Sitemapper.URL{
-        loc: "https://kimper.gigalixirapp.com/",
-        changefreq: :weekly,
-        lastmod: Date.utc_today()
-      }
-    end)
-    |> Sitemapper.generate(config)
-    |> Sitemapper.persist(config)
-    |> Stream.run()
+    conn
+    |> put_resp_content_type("text/xml")
+    |> text(xml)
   end
+
 end
