@@ -14,7 +14,8 @@ defmodule Kimper.Storage do
     kosdaq: %Indicator{},
     nasdaq: %Indicator{},
     snp500: %Indicator{},
-    dowjones: %Indicator{}
+    dowjones: %Indicator{},
+    exchange_rate_updated_at: nil # TODO: 환율 업데이트 문제 해결 후 삭제 요망
   }
 
   def start_link(_), do: GenServer.start_link(__MODULE__, @initial_state, name: __MODULE__)
@@ -40,6 +41,7 @@ defmodule Kimper.Storage do
   def set_bybit_usd_funding_rate(rate, :eth), do: GenServer.cast(__MODULE__, {:bybit_usd_funding_rate, rate, :eth})
 
   def set_exchange_rate(rate), do: GenServer.cast(__MODULE__, {:exchange_rate, rate})
+  def set_exchange_rate_updated_at(date), do: GenServer.cast(__MODULE__, {:exchange_rate_updated_at, date}) # TODO: 환율 업데이트 문제 해결 후 삭제 요망
   def set_kospi(kospi), do: GenServer.cast(__MODULE__, {:kospi, kospi})
   def set_kosdaq(kosdaq), do: GenServer.cast(__MODULE__, {:kosdaq, kosdaq})
   def set_nasdaq(nasdaq), do: GenServer.cast(__MODULE__, {:nasdaq, nasdaq})
@@ -77,8 +79,10 @@ defmodule Kimper.Storage do
   def handle_cast({:snp500, snp500}, state), do: {:noreply, Map.put(state, :snp500, snp500)}
   def handle_cast({:dowjones, dowjones}, state), do: {:noreply, Map.put(state, :dowjones, dowjones)}
 
+  def handle_cast({:exchange_rate_updated_at, date}, state), do: {:noreply, Map.put(state, :exchange_rate_updated_at, date)} # TODO: 환율 업데이트 문제 해결 후 삭제 요망
+
   def handle_call(:state, _from, state) do
-    new_state = state
+        new_state = state
     |> Enum.map(fn {key, value} ->
       if (key in state.coins) do
         bybit_usdt_price = value[:bybit][:usdt]

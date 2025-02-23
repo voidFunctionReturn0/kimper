@@ -16,13 +16,14 @@ defmodule Kimper.ExchangeRateFetcher do
   def fetch_exchange_rate, do: Process.send_after(self(), :fetch_exchange_rate, 0)
 
   def handle_info(:fetch_exchange_rate, state) do
-    new_exchange_rate = fetch_usd_krw_rate()
+    {new_exchange_rate, updated_at } = fetch_usd_krw_rate()
     Kimper.Storage.set_exchange_rate(new_exchange_rate)
+    Kimper.Storage.set_exchange_rate_updated_at(updated_at) # TODO: 환율 업데이트 문제 해결 후 삭제 요망
     {:noreply, %{state | usd_krw_rate: new_exchange_rate}}
   end
 
   defp fetch_usd_krw_rate() do
     response = HTTPoison.get!(@exchange_rate_api_url).body |> Jason.decode!()
-    response["usd"]["krw"]
+    {response["usd"]["krw"], response["date"]} # TODO: 환율 업데이트 문제 해결 후 삭제 요망
   end
 end
