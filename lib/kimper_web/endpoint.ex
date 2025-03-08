@@ -1,8 +1,6 @@
 defmodule KimperWeb.Endpoint do
   use Phoenix.Endpoint, otp_app: :kimper
 
-  plug :remove_x_robots_tag
-
   # The session will be stored in the cookie and signed,
   # this means its contents can be read but not tampered with.
   # Set :encryption_salt if you would also like to encrypt it.
@@ -51,8 +49,4 @@ defmodule KimperWeb.Endpoint do
   plug Plug.Head
   plug Plug.Session, @session_options
   plug KimperWeb.Router
-
-  defp remove_x_robots_tag(conn, _opts) do
-    Plug.Conn.delete_resp_header(conn, "X-Robots-Tag")
-  end
 end
