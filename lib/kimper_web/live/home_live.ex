@@ -308,7 +308,7 @@ defmodule KimperWeb.HomeLive do
             <div>
                 <span class={
                     cond do
-                        @change_rate > 0 -> "text-my_red-3"
+                        @change_rate >= 0 -> "text-my_red-3"
                         @change_rate < 0 -> "text-my_blue-2"
                     end
                 }>
@@ -317,6 +317,8 @@ defmodule KimperWeb.HomeLive do
                         +<%= @change_rate %>%
                     <% @change_rate < 0 -> %>
                         <%= @change_rate %>%
+                    <% @change_rate == 0 -> %>
+                        0%
                   <% end %>
                 </span>
             </div>
