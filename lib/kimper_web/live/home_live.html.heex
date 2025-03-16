@@ -52,8 +52,12 @@
                             <td class="flex-1 px-4 py-2 min-w-40">
                                 <span><%= coin.ticker_english %></span>
                                 <span class="text-my_gray-4 text-xs"> · <%= coin.ticker_korean %></span></td>
-                            <%!-- TODO: 김프 양수면 파랗게? --%>
-                            <td class="flex-1 px-4 py-2 min-w-24 text-my_red-1"><%= to_str_kimp(coin.kimp) %></td> 
+                            <%!-- TODO: 김프 음수면 파랗게 --%>
+                            <%= if coin.kimp <= 0 do %>
+                               <td class="flex-1 px-4 py-2 min-w-24 text-my_blue-2"><%= to_str_kimp(coin.kimp) %></td> 
+                            <% else %>
+                               <td class="flex-1 px-4 py-2 min-w-24 text-my_red-3"><%= to_str_kimp(coin.kimp) %></td>
+                            <% end %> 
                             <td class="flex-1 px-4 py-2 min-w-40 hidden md:table-cell"><%= to_str_price(coin.upbit_krw_price) %></td>
                             <td class="flex-1 px-4 py-2 min-w-40 hidden md:table-cell"><%= to_str_price(coin.bybit_krw_price) %></td>
                             <td class="flex-1 px-4 py-2 min-w-24 hidden md:table-cell"><button class="btn-red" phx-click="show_modal">차트보기</button></td>
@@ -78,7 +82,11 @@
                     <div class="w-32 flex flex-col gap-7 p-2.5 border rounded-lg bg-my_gray-6 border-my_gray-7">
                         <div class="w-full flex flex-col gap-1">
                             <span class="font-bold text-base"><%= coin.ticker_english %>USD</span>
-                            <span class="font-bold text-xl text-my_red-1"><%= to_str_funding_rate(coin.bybit_usd_funding_rate) %></span> <!-- TODO: 음수면 파랗게 -->
+                            <%= if coin.bybit_usd_funding_rate <= 0 do %>
+                                <span class="font-bold text-xl text-my_blue-2"><%= to_str_funding_rate(coin.bybit_usd_funding_rate) %></span>
+                            <% else %>
+                                <span class="font-bold text-xl text-my_red-3"><%= to_str_funding_rate(coin.bybit_usd_funding_rate) %></span>
+                            <% end %>
                         </div>
                         <div class="w-full flex flex-col items-end gap-1">
                             <button class="btn-blue" type="button" onclick={"window.open('#{coin.telegram_link}')"}>알림받기</button>
