@@ -1,5 +1,3 @@
-# TODO: 20초마다 하트비트 ping 보내기?
-
 defmodule Kimper.BybitPriceFetcher do
   use WebSockex
   require Logger
@@ -12,8 +10,10 @@ defmodule Kimper.BybitPriceFetcher do
   @eos "tickers.EOSUSDT"
   @eth "tickers.ETHUSDT"
 
+  @reconnect_count 3
+
   def start_link(_state) do
-    case WebSockex.start_link(@url, __MODULE__, %{}, name: __MODULE__) do
+    case WebSockex.start_link(@url, __MODULE__, %{reconnect: @reconnect_count}, name: __MODULE__) do
       {:ok, pid} ->
         subscription_message = Jason.encode!(%{
           "op" => "subscribe",
@@ -54,8 +54,19 @@ defmodule Kimper.BybitPriceFetcher do
     {:ok, state}
   end
 
+  def handle_connect(_conn, state) do
+    {:ok, Map.put(state, :reconnect, @reconnect_count)}
+  end
+
   def handle_disconnect(_reason, state) do
-    Logger.error("WebSocket 연결 끊김, 다시 연결 시도 중...")
-    {:reconnect, state}
+    Logger.error("WebSocket 연결 끊김, 다시 연결 시도 중... #{state.reconnect}")
+    new_state = Map.put(state, :reconnect, state.reconnect - 1)
+
+    if state.reconnect <= 0 do
+      {:ok, new_state}
+    else
+      {:reconnect, new_state}
+    end
+
   end
 end
