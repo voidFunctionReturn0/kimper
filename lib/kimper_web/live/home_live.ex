@@ -20,8 +20,9 @@ defmodule KimperWeb.HomeLive do
     |> assign(dowjones: %{recent_value: nil, change_amount: nil, change_rate: nil})
     |> assign(update_in: @default_string)
     |> assign(show_modal: false) # TODO: 임시 모달을 위한 것. 추후 삭제 요망
-    |> assign(exchange_rate: nil) # TODO: 임시로 넣음. 환율 업데이트 문제 수정 후 삭제 요망
-    |> assign(exchange_rate_updated_at: nil) # TODO: 임시로 넣음. 환율 업데이트 문제 수정 후 삭제 요망
+    |> assign(usd_krw_exchange_rate: nil) # TODO: 임시로 넣음. 환율 업데이트 문제 수정 후 삭제 요망
+    |> assign(usd_krw_exchange_rate_updated_at: nil) # TODO: 임시로 넣음. 환율 업데이트 문제 수정 후 삭제 요망
+    |> assign(jpy_krw_exchange_rate: nil)
 
     {:ok, socket, layout: false}
   end
@@ -112,8 +113,9 @@ defmodule KimperWeb.HomeLive do
         change_rate: dowjones_change_rate,
       })
       |> assign(update_in: update_in(Timex.now()))
-      |> assign(exchange_rate: Storage.state.exchange_rate) # TODO: 임시로 넣음. 환율 업데이트 문제 수정 후 삭제 요망
-      |> assign(exchange_rate_updated_at: Storage.state.exchange_rate_updated_at) # TODO: 임시로 넣음. 환율 업데이트 문제 수정 후 삭제 요망
+      |> assign(usd_krw_exchange_rate: Storage.state.usd_krw_exchange_rate) # TODO: 임시로 넣음. 환율 업데이트 문제 수정 후 삭제 요망
+      |> assign(usd_krw_exchange_rate_updated_at: Storage.state.usd_krw_exchange_rate_updated_at) # TODO: 임시로 넣음. 환율 업데이트 문제 수정 후 삭제 요망
+      |> assign(jpy_krw_exchange_rate: Storage.state.jpy_krw_exchange_rate)
     }
   end
 

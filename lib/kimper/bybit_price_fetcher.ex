@@ -11,7 +11,7 @@ defmodule Kimper.BybitPriceFetcher do
   @eth "tickers.ETHUSDT"
 
   def start_link(_state) do
-    case WebSockex.start_link(@url, __MODULE__, %{reconnect: @reconnect_count}, name: __MODULE__) do
+    case WebSockex.start_link(@url, __MODULE__, %{}, name: __MODULE__) do
       {:ok, pid} ->
         subscription_message = Jason.encode!(%{
           "op" => "subscribe",

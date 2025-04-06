@@ -9,13 +9,14 @@ defmodule Kimper.Storage do
     xrp: %{upbit: %{krw: nil}, bybit: %{usdt: nil, usdt_to_krw: nil, usd_funding_rate: nil}, kimp: nil},
     eos: %{upbit: %{krw: nil}, bybit: %{usdt: nil, usdt_to_krw: nil, usd_funding_rate: nil}, kimp: nil},
     eth: %{upbit: %{krw: nil, previous_close: nil}, bybit: %{usdt: nil, usdt_to_krw: nil, usd_funding_rate: nil}, kimp: nil},
-    exchange_rate: nil,
+    usd_krw_exchange_rate: nil,
+    jpy_krw_exchange_rate: nil,
     kospi: %Indicator{},
     kosdaq: %Indicator{},
     nasdaq: %Indicator{},
     snp500: %Indicator{},
     dowjones: %Indicator{},
-    exchange_rate_updated_at: nil # TODO: 환율 업데이트 문제 해결 후 삭제 요망
+    usd_krw_exchange_rate_updated_at: nil # TODO: 환율 업데이트 문제 해결 후 삭제 요망
   }
 
   def start_link(_), do: GenServer.start_link(__MODULE__, @initial_state, name: __MODULE__)
@@ -40,8 +41,10 @@ defmodule Kimper.Storage do
   def set_bybit_usd_funding_rate(rate, :eos), do: GenServer.cast(__MODULE__, {:bybit_usd_funding_rate, rate, :eos})
   def set_bybit_usd_funding_rate(rate, :eth), do: GenServer.cast(__MODULE__, {:bybit_usd_funding_rate, rate, :eth})
 
-  def set_exchange_rate(rate), do: GenServer.cast(__MODULE__, {:exchange_rate, rate})
-  def set_exchange_rate_updated_at(date), do: GenServer.cast(__MODULE__, {:exchange_rate_updated_at, date}) # TODO: 환율 업데이트 문제 해결 후 삭제 요망
+  def set_usd_krw_exchange_rate(rate), do: GenServer.cast(__MODULE__, {:usd_krw_exchange_rate, rate})
+  def set_usd_krw_exchange_rate_updated_at(date), do: GenServer.cast(__MODULE__, {:usd_krw_exchange_rate_updated_at, date}) # TODO: 환율 업데이트 문제 해결 후 삭제 요망
+  def set_jpy_krw_exchange_rate(rate), do: GenServer.cast(__MODULE__, {:jpy_krw_exchange_rate, rate})
+
   def set_kospi(kospi), do: GenServer.cast(__MODULE__, {:kospi, kospi})
   def set_kosdaq(kosdaq), do: GenServer.cast(__MODULE__, {:kosdaq, kosdaq})
   def set_nasdaq(nasdaq), do: GenServer.cast(__MODULE__, {:nasdaq, nasdaq})
@@ -72,22 +75,24 @@ defmodule Kimper.Storage do
   def handle_cast({:bybit_usd_funding_rate, rate, :eos}, state), do: {:noreply, put_in(state, [:eos, :bybit, :usd_funding_rate], rate)}
   def handle_cast({:bybit_usd_funding_rate, rate, :eth}, state), do: {:noreply, put_in(state, [:eth, :bybit, :usd_funding_rate], rate)}
 
-  def handle_cast({:exchange_rate, rate}, state), do: {:noreply, Map.put(state, :exchange_rate, rate)}
+  def handle_cast({:usd_krw_exchange_rate, rate}, state), do: {:noreply, Map.put(state, :usd_krw_exchange_rate, rate)}
+  def handle_cast({:jpy_krw_exchange_rate, rate}, state), do: {:noreply, Map.put(state, :jpy_krw_exchange_rate, rate)}
+
   def handle_cast({:kospi, kospi}, state), do: {:noreply, Map.put(state, :kospi, kospi)}
   def handle_cast({:kosdaq, kosdaq}, state), do: {:noreply, Map.put(state, :kosdaq, kosdaq)}
   def handle_cast({:nasdaq, nasdaq}, state), do: {:noreply, Map.put(state, :nasdaq, nasdaq)}
   def handle_cast({:snp500, snp500}, state), do: {:noreply, Map.put(state, :snp500, snp500)}
   def handle_cast({:dowjones, dowjones}, state), do: {:noreply, Map.put(state, :dowjones, dowjones)}
 
-  def handle_cast({:exchange_rate_updated_at, date}, state), do: {:noreply, Map.put(state, :exchange_rate_updated_at, date)} # TODO: 환율 업데이트 문제 해결 후 삭제 요망
+  def handle_cast({:usd_krw_exchange_rate_updated_at, date}, state), do: {:noreply, Map.put(state, :usd_krw_exchange_rate_updated_at, date)} # TODO: 환율 업데이트 문제 해결 후 삭제 요망
 
   def handle_call(:state, _from, state) do
         new_state = state
     |> Enum.map(fn {key, value} ->
       if (key in state.coins) do
         bybit_usdt_price = value[:bybit][:usdt]
-        exchange_rate = state[:exchange_rate]
-        bybit_krw_price = get_krw_price(bybit_usdt_price, exchange_rate)
+        usd_krw_exchange_rate = state[:usd_krw_exchange_rate]
+        bybit_krw_price = get_krw_price(bybit_usdt_price, usd_krw_exchange_rate)
         {key, put_in(value, [:bybit, :usdt_to_krw], bybit_krw_price)}
       else
         {key, value}
@@ -108,8 +113,8 @@ defmodule Kimper.Storage do
     {:reply, new_state, new_state}
   end
 
-  defp get_krw_price(bybit_usdt_price, exchange_rate) when is_float(bybit_usdt_price) and is_float(exchange_rate) do
-    bybit_usdt_price * exchange_rate
+  defp get_krw_price(bybit_usdt_price, usd_krw_exchange_rate) when is_float(bybit_usdt_price) and is_float(usd_krw_exchange_rate) do
+    bybit_usdt_price * usd_krw_exchange_rate
   end
   defp get_krw_price(_, _), do: nil
 

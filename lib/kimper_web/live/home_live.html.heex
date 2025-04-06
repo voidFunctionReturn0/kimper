@@ -9,8 +9,26 @@
 <% end %>
 
 <div class="w-full h-full flex flex-col items-center text-my_black-2">
-    <nav class="w-full h-16 bg-my_black-1" />
-    <main class="w-full max-w-3xl flex flex-col gap-12 py-16">
+    <nav class="w-full h-16 bg-my_black-1 flex justify-center">
+        <div class="max-w-3xl w-full p-4 flex items-center">
+            <img src={~p"/images/kimper_logo.png"} alt="로고" class="w-10" />
+        </div>
+    </nav>
+    <div class="w-full bg-my_gray-9 py-4 flex justify-center items-center">
+        <div class="w-full max-w-3xl px-4 flex gap-7">
+            <%= if @usd_krw_exchange_rate do %>
+                <div>
+                    달러 <b><%= @usd_krw_exchange_rate |> Float.round(1) %></b>원
+                </div>
+            <% end %>
+            <%= if @jpy_krw_exchange_rate do %>
+                <div>
+                    엔화(100엔) <b><%= @jpy_krw_exchange_rate * 100 |> Float.round(1) %></b>원
+                </div>
+            <% end %>
+        </div>
+    </div>
+    <main class="w-full max-w-3xl flex flex-col gap-12 py-10">
         <section class="section1 gap-3">
             <div class="label-div1">
                 <span class="label1">
@@ -109,7 +127,7 @@
                 <span class="text-sm text-my_gray-3">contact : dud3576@gmail.com</span>
             </div>
             <span class="text-xs text-my_gray-2">Copyright(C) Kimper Co., Ltd. All rights reserved.</span>
-            <span class="text-white"><%= @exchange_rate %><%= @exchange_rate_updated_at %></span>
+            <span class="text-white"><%= @usd_krw_exchange_rate %><%= @usd_krw_exchange_rate_updated_at %></span>
         </div>
     </footer>
 </div>
