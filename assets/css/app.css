@@ -3,6 +3,9 @@
 @import "tailwindcss/utilities";
 
 @layer base {
+    body {
+        font-family: SpoqaHanSansNeo-Regular, Roboto;
+    }    
     button {
         @apply px-2 py-1 text-xs rounded-lg
     }
