@@ -10,8 +10,6 @@ defmodule Kimper.BybitPriceFetcher do
   @eos "tickers.EOSUSDT"
   @eth "tickers.ETHUSDT"
 
-  @reconnect_count 3
-
   def start_link(_state) do
     case WebSockex.start_link(@url, __MODULE__, %{reconnect: @reconnect_count}, name: __MODULE__) do
       {:ok, pid} ->
@@ -54,19 +52,9 @@ defmodule Kimper.BybitPriceFetcher do
     {:ok, state}
   end
 
-  def handle_connect(_conn, state) do
-    {:ok, Map.put(state, :reconnect, @reconnect_count)}
-  end
-
   def handle_disconnect(_reason, state) do
-    Logger.error("WebSocket 연결 끊김, 다시 연결 시도 중... #{state.reconnect}")
-    new_state = Map.put(state, :reconnect, state.reconnect - 1)
-
-    if state.reconnect <= 0 do
-      {:ok, new_state}
-    else
-      {:reconnect, new_state}
-    end
-
+    Logger.error("WebSocket 연결 끊김. BybitPriceFetcher 재시작")
+    Process.exit(self(), :shutdown)
+    {:ok, state}
   end
 end
