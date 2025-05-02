@@ -7,4 +7,5 @@ defmodule KimperWeb.PageHTML do
   use KimperWeb, :html
 
   embed_templates "page_html/*"
+  
 end
