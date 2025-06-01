@@ -19,7 +19,7 @@ defmodule KimperWeb.HomeLive do
     |> assign(snp500: %{recent_value: nil, change_amount: nil, change_rate: nil})
     |> assign(dowjones: %{recent_value: nil, change_amount: nil, change_rate: nil})
     |> assign(update_in: @default_string)
-    |> assign(show_modal: false) # TODO: 임시 모달을 위한 것. 추후 삭제 요망
+    |> assign(show_modal: false) # TODO: 임시 모달을 위한 것.  추후 삭제 요망
     |> assign(usd_krw_exchange_rate: nil) # TODO: 임시로 넣음. 환율 업데이트 문제 수정 후 삭제 요망
     |> assign(usd_krw_exchange_rate_updated_at: nil) # TODO: 임시로 넣음. 환율 업데이트 문제 수정 후 삭제 요망
     |> assign(jpy_krw_exchange_rate: nil)
